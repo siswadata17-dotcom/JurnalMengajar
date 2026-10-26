@@ -156,9 +156,9 @@
       <option value="under50">🚨 Hadir &lt; 50%</option>
     </select>
     <div class="separator"></div>
-    <button class="btn-blue" onclick="importExcel()">📥 Import</button>
+    <button class="btn-blue" onclick="importExcel()" title="Bisa impor per-kelas atau langsung seluruh kelas">📥 Import</button>
     <button class="btn-green" onclick="exportExcel()">📤 Export</button>
-    <button onclick="downloadTemplate()">📋 Template</button>
+    <button onclick="downloadTemplate()" title="Unduh template Excel untuk semua kelas">📋 Template</button>
     <div class="separator"></div>
     <button class="btn-teal" id="btnSync" onclick="manualSync()">☁️ Sync Sheets</button>
     <div class="separator"></div>
@@ -189,7 +189,7 @@
     <span class="status-S">S Sakit</span>
     <span class="status-I">I Izin</span>
     <span class="status-A">A Alfa</span>
-    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa • Auto-Sync aktif</span>
+    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa • Impor multi-kelas otomatis</span>
   </div>
 </div>
 
@@ -1398,7 +1398,7 @@ function buildRekapHTML(c) {
   notesHtml += `</tbody></table>`;
   if (hasNotes) html += notesHtml;
 
-  // BAGIAN B. REKAP MATERI & JADWAL (Halaman ke-2 persis seperti gambar)
+  // BAGIAN B. REKAP MATERI & JADWAL
   html += `
     <div class="page-break" style="padding-top: 10px;">
       <h4 style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">${hasNotes ? 'C' : 'B'}. REKAP MATERI & JADWAL</h4>
@@ -1434,7 +1434,7 @@ function buildRekapHTML(c) {
 
   html += `</tbody></table>
 
-      <!-- AREA TANDA TANGAN (SEBELAH KANAN SESUAI GAMBAR) -->
+      <!-- AREA TANDA TANGAN -->
       <div style="margin-top: 24px; text-align: right; width: 100%;">
         <div style="display: inline-block; text-align: right; min-width: 220px;">
           <p style="margin: 0; font-size: 11px;">${tglCetak}</p>
@@ -1471,39 +1471,147 @@ function printAllRekap() {
   setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
-/* ===== IMPORT & EXPORT EXCEL ===== */
-function importExcel() { document.getElementById('fileInput').click(); }
+/* ===== IMPORT & EXPORT EXCEL (MULTI-CLASS SUPPORT) ===== */
+function importExcel() { 
+  document.getElementById('fileInput').click(); 
+}
 
 function handleFile(e) {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
+
   reader.onload = ev => {
     try {
-      const wb = XLSX.read(new Uint8Array(ev.target.result), { type:'array' });
-      const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval:'' });
-      if (!rows.length) { toast('File Excel kosong!', 'error'); return; }
-      const keys = Object.keys(rows[0]);
-      const nameKey = keys.find(k => /nama|name/i.test(k)) || keys[0];
-      const nisKey = keys.find(k => /^nis$|^no/i.test(k)) || keys[1];
+      const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+      if (!wb.SheetNames || wb.SheetNames.length === 0) {
+        toast('File Excel kosong atau tidak terbaca!', 'error');
+        return;
+      }
 
-      const c = state.classes[currentClass];
-      let count = 0;
-      rows.forEach(r => {
-        const name = String(r[nameKey]).trim();
-        if (name) {
-          const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
-          c.students.push({ id, name, nis: String(r[nisKey]||'').trim() });
-          c.attendance[id] = {};
-          for (let m=1; m<=c.meetings; m++) c.attendance[id][m] = 'H';
-          count++;
-        }
+      // Map penampung: { [namaKelas]: [ { nis, name }, ... ] }
+      const importedMap = {};
+
+      const cleanKey = k => String(k || '').trim().toLowerCase();
+      const findKey = (row, reg) => Object.keys(row).find(k => reg.test(k.trim().toLowerCase()));
+
+      let hasMultiClassColumn = false;
+
+      // Iterasi seluruh sheet di workbook
+      wb.SheetNames.forEach(sheetName => {
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
+        if (!rows || rows.length === 0) return;
+
+        rows.forEach(r => {
+          const classKey = findKey(r, /^kelas|^class|^rombel/);
+          const nameKey = findKey(r, /nama|name|siswa/);
+          const nisKey = findKey(r, /^nis|^nisn|^no\.?\s*induk/);
+
+          const studentName = String(r[nameKey || ''] || '').trim();
+          if (!studentName) return;
+
+          const studentNis = String(r[nisKey || ''] || '').trim();
+
+          let targetClassName = '';
+          if (classKey && String(r[classKey]).trim()) {
+            hasMultiClassColumn = true;
+            targetClassName = String(r[classKey]).trim();
+          } else {
+            // Gunakan nama sheet sebagai nama kelas
+            targetClassName = sheetName.trim();
+          }
+
+          if (!importedMap[targetClassName]) {
+            importedMap[targetClassName] = [];
+          }
+          importedMap[targetClassName].push({ nis: studentNis, name: studentName });
+        });
       });
+
+      const detectedClassNames = Object.keys(importedMap);
+      if (detectedClassNames.length === 0) {
+        toast('Tidak ditemukan data siswa valid pada file Excel!', 'error');
+        return;
+      }
+
+      // Jika hanya ada 1 sheet bernama default / tidak terdaftar sebagai kelas khusus dan tidak ada kolom kelas
+      // arahkan ke kelas yang sedang aktif saat ini
+      const isSingleDefaultSheet = !hasMultiClassColumn && wb.SheetNames.length === 1 &&
+        ['sheet1', 'template', 'data', 'siswa'].includes(wb.SheetNames[0].toLowerCase());
+
+      if (isSingleDefaultSheet && detectedClassNames.length === 1) {
+        const rawSheetName = detectedClassNames[0];
+        const curClassName = state.classes[currentClass].name;
+        if (rawSheetName !== curClassName) {
+          importedMap[curClassName] = importedMap[rawSheetName];
+          delete importedMap[rawSheetName];
+        }
+      }
+
+      const classListSummary = Object.keys(importedMap).map(k => `• ${k} (${importedMap[k].length} siswa)`).join('\n');
+
+      const isReplace = confirm(
+        `Ditemukan data siswa untuk kelas berikut:\n${classListSummary}\n\n` +
+        `PILIH METODE IMPORT:\n` +
+        `[OK] = MENIMPA/MENGGANTI seluruh siswa lama di kelas tersebut.\n` +
+        `[BATAL/CANCEL] = MENAMBAHKAN (menggabungkan) siswa ke data yang sudah ada.`
+      );
+
+      let totalImported = 0;
+      let classesAffected = 0;
+
+      Object.keys(importedMap).forEach(targetName => {
+        // Cari kelas yang cocok (case-insensitive)
+        let targetClass = state.classes.find(c => c.name.trim().toLowerCase() === targetName.trim().toLowerCase());
+
+        // Jika kelas belum ada, buat kelas baru secara otomatis
+        if (!targetClass) {
+          targetClass = {
+            id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            name: targetName,
+            subject: state.subjects[0] || 'Informatika',
+            students: [],
+            attendance: {},
+            notes: {},
+            meetings: 0,
+            meetingsData: {}
+          };
+          state.classes.push(targetClass);
+        }
+
+        if (isReplace) {
+          targetClass.students = [];
+          targetClass.attendance = {};
+          if (targetClass.notes) targetClass.notes = {};
+        }
+
+        importedMap[targetName].forEach(stData => {
+          const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+          targetClass.students.push({
+            id,
+            nis: stData.nis,
+            name: stData.name
+          });
+
+          // Inisialisasi absensi default Hadir 'H' untuk pertemuan yang sudah berjalan
+          if (!targetClass.attendance[id]) targetClass.attendance[id] = {};
+          for (let m = 1; m <= targetClass.meetings; m++) {
+            targetClass.attendance[id][m] = 'H';
+          }
+          totalImported++;
+        });
+
+        classesAffected++;
+      });
+
       saveState(true);
       render();
-      toast(`✅ Berhasil mengimpor ${count} siswa`);
-    } catch(err) { toast('Gagal membaca Excel: ' + err.message, 'error'); }
+      toast(`✅ Sukses impor ${totalImported} siswa ke ${classesAffected} kelas!`);
+    } catch (err) {
+      toast('Gagal memproses file Excel: ' + err.message, 'error');
+    }
   };
+
   reader.readAsArrayBuffer(file);
   e.target.value = '';
 }
@@ -1531,13 +1639,38 @@ function exportExcel() {
 }
 
 function downloadTemplate() {
-  const sample = [];
-  for (let i=1; i<=10; i++) {
-    sample.push({ 'NIS': '2026' + String(i).padStart(3, '0'), 'Nama': 'Contoh Siswa ' + i });
-  }
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sample), 'Template');
-  XLSX.writeFile(wb, 'Template_Siswa.xlsx');
+
+  // 1. Buat sheet alternatif SEMUA_KELAS (1 tabel gabungan dengan kolom Kelas)
+  const masterList = [];
+  state.classes.forEach((c, cIdx) => {
+    for (let i = 1; i <= 3; i++) {
+      masterList.push({
+        'No': masterList.length + 1,
+        'Kelas': c.name,
+        'NIS': `2026${String(cIdx + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`,
+        'Nama Siswa': `Contoh Siswa ${i} (${c.name})`
+      });
+    }
+  });
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(masterList), 'SEMUA_KELAS');
+
+  // 2. Buat tab sheet terpisah untuk SETIAP KELAS di aplikasi
+  state.classes.forEach((c, cIdx) => {
+    const classRows = [];
+    for (let i = 1; i <= 5; i++) {
+      classRows.push({
+        'No': i,
+        'NIS': `2026${String(cIdx + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`,
+        'Nama Siswa': `Siswa Contoh ${i} - ${c.name}`
+      });
+    }
+    const cleanSheetName = c.name.replace(/[:\\/?*\[\]]/g, '').substring(0, 31);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(classRows), cleanSheetName);
+  });
+
+  XLSX.writeFile(wb, `Template_Siswa_Semua_Kelas_${state.schoolName.replace(/\s+/g, '_')}.xlsx`);
+  toast('📋 Template Excel berhasil diunduh. Anda bisa isi per-sheet kelas ATAU di sheet SEMUA_KELAS!');
 }
 
 /* ===== DOWNLOAD SELF-CONTAINED HTML ===== */
@@ -1621,4 +1754,4 @@ startClock();
 render();
 </script>
 </body>
-     </html>
+   </html>
