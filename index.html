@@ -7,129 +7,119 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; font-size: 14px; }
-  .container { max-width: 1150px; margin: 0 auto; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
-  header { background: #2a5298; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-  .school-info h1 { font-size: 18px; }
+  body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; font-size: 14px; }
+  .container { max-width: 1200px; margin: 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+  header { background: #1e3a8a; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .school-info h1 { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
   .school-info p { font-size: 12px; opacity: .9; margin-top: 2px; }
-  .school-info .teacher { font-size: 12px; margin-top: 4px; background: rgba(255,255,255,.15); display: inline-block; padding: 3px 10px; border-radius: 3px; }
+  .school-info .teacher { font-size: 12px; margin-top: 4px; background: rgba(255,255,255,.15); display: inline-block; padding: 3px 10px; border-radius: 4px; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .school-badge { background: rgba(255,255,255,.15); padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-  .toolbar { padding: 12px 20px; background: #fafafa; border-bottom: 1px solid #ddd; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .toolbar label { font-weight: bold; font-size: 13px; }
-  select, button, input, textarea { padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; font-family: inherit; background: #fff; }
-  button { cursor: pointer; transition: opacity .2s; }
-  button:hover { opacity: .88; }
+  .net-badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+  .net-online { background: #10b981; color: #fff; }
+  .net-offline { background: #ef4444; color: #fff; }
+  .net-pending { background: #f59e0b; color: #fff; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: .6; } 100% { opacity: 1; } }
+
+  .toolbar { padding: 12px 20px; background: #fafafa; border-bottom: 1px solid #e5e7eb; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .toolbar label { font-weight: bold; font-size: 13px; color: #4b5563; }
+  select, button, input, textarea { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: inherit; background: #fff; }
+  button { cursor: pointer; transition: background .15s, opacity .15s; font-weight: 500; }
+  button:hover { opacity: .9; }
   button:disabled { opacity: .5; cursor: not-allowed; }
-  .btn-blue { background: #2a5298; color: #fff; border-color: #2a5298; }
-  .btn-green { background: #10b981; color: #fff; border-color: #10b981; }
-  .btn-red { background: #ef4444; color: #fff; border-color: #ef4444; }
+  .btn-blue { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .btn-green { background: #059669; color: #fff; border-color: #059669; }
+  .btn-red { background: #dc2626; color: #fff; border-color: #dc2626; }
   .btn-gray { background: #6b7280; color: #fff; border-color: #6b7280; }
-  .btn-cyan { background: #06b6d4; color: #fff; border-color: #06b6d4; }
-  .btn-orange { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+  .btn-cyan { background: #0891b2; color: #fff; border-color: #0891b2; }
+  .btn-orange { background: #d97706; color: #fff; border-color: #d97706; }
   .btn-outline { background: #fff; color: #b91c1c; border-color: #fca5a5; }
   .btn-dark { background: #1f2937; color: #fff; border-color: #1f2937; }
   .btn-purple { background: #7c3aed; color: #fff; border-color: #7c3aed; }
   .btn-teal { background: #0d9488; color: #fff; border-color: #0d9488; }
-  .separator { width: 1px; height: 24px; background: #ddd; margin: 0 4px; }
-  .info-bar { padding: 10px 20px; background: #f0f4ff; border-bottom: 1px solid #ddd; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px; }
-  .info-bar span { background: #fff; padding: 4px 10px; border: 1px solid #ccc; border-radius: 3px; }
-  .info-bar b { color: #2a5298; }
-  .meeting-form { padding: 12px 20px; background: #fffbea; border-bottom: 1px solid #fbbf24; }
+  .separator { width: 1px; height: 24px; background: #e5e7eb; margin: 0 4px; }
+
+  .info-bar { padding: 10px 20px; background: #f0f4ff; border-bottom: 1px solid #dbeafe; font-size: 13px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .info-bar span { background: #fff; padding: 4px 10px; border: 1px solid #cbd5e1; border-radius: 4px; }
+  .info-bar b { color: #1e3a8a; }
+
+  .meeting-form { padding: 12px 20px; background: #fffbeb; border-bottom: 1px solid #fde68a; }
   .meeting-form h3 { font-size: 14px; margin-bottom: 8px; color: #92400e; }
   .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; align-items: flex-end; }
   .form-row > div { flex: 1; min-width: 150px; }
   .form-row label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; color: #555; }
   .form-row input, .form-row select, .form-row textarea { width: 100%; }
-  .form-row textarea { min-height: 50px; resize: vertical; }
-  .clock-info { background: #dbeafe; border: 1px solid #93c5fd; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #1e40af; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-  .clock-info b { font-size: 14px; }
+  .form-row textarea { min-height: 45px; resize: vertical; }
+
+  .clock-info { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #1e40af; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .clock-info b { font-size: 13px; }
   .clock-info .auto-badge { background: #10b981; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+
   .table-wrap { padding: 15px 20px; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; }
-  th { background: #2a5298; color: #fff; padding: 8px; text-align: left; font-size: 13px; }
-  td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 13px; }
-  tr:hover { background: #f9f9f9; }
-  .status-cell { text-align: center; cursor: pointer; font-weight: bold; min-width: 50px; padding: 4px; border-radius: 3px; user-select: none; }
+  table { width: 100%; border-collapse: collapse; background: #fff; }
+  th { background: #1e3a8a; color: #fff; padding: 8px; text-align: left; font-size: 13px; }
+  td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+  tr:hover { background: #f8fafc; }
+  .status-cell { text-align: center; cursor: pointer; font-weight: bold; min-width: 48px; padding: 5px; border-radius: 4px; user-select: none; transition: transform .1s; }
+  .status-cell:active { transform: scale(0.95); }
   .status-H { background: #d1fae5; color: #065f46; }
   .status-S { background: #fee2e2; color: #991b1b; }
   .status-I { background: #fef3c7; color: #92400e; }
-  .status-A { background: #e5e7eb; color: #374151; }
-  .pct-badge { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 11px; font-weight: bold; }
+  .status-A { background: #f3f4f6; color: #374151; }
+
+  .pct-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: bold; }
   .pct-high { background: #d1fae5; color: #065f46; }
   .pct-mid { background: #fef3c7; color: #92400e; }
   .pct-low { background: #fee2e2; color: #991b1b; }
-  .note-badge { background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; padding: 2px 6px; border-radius: 4px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; max-width: 140px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+  .note-badge { background: #fef3c7; border: 1px solid #f59e0b; color: #b45309; padding: 2px 8px; border-radius: 4px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+
   .nav-group { margin-left: auto; display: flex; gap: 5px; align-items: center; }
-  .legend { padding: 8px 20px; font-size: 12px; color: #666; border-top: 1px solid #eee; }
-  .legend span { display: inline-block; padding: 2px 8px; margin-right: 5px; border-radius: 3px; font-weight: bold; }
-  .empty { text-align: center; padding: 35px 20px; color: #888; }
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; }
+  .legend { padding: 10px 20px; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; background: #f9fafb; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .legend span { display: inline-block; padding: 3px 8px; border-radius: 3px; font-weight: bold; }
+  .empty { text-align: center; padding: 35px 20px; color: #94a3b8; }
+
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
   .modal-bg.show { display: flex; }
-  .modal { background: #fff; padding: 20px; border-radius: 6px; max-width: 600px; width: 95%; max-height: 92vh; overflow-y: auto; }
-  .modal h3 { margin-bottom: 10px; font-size: 16px; }
-  .modal p { margin-bottom: 15px; color: #555; font-size: 13px; line-height: 1.6; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 15px; }
-  .keep-note { background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; padding: 8px; border-radius: 4px; font-size: 12px; margin-bottom: 12px; }
+  .modal { background: #fff; padding: 22px; border-radius: 8px; max-width: 640px; width: 95%; max-height: 92vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+  .modal h3 { margin-bottom: 12px; font-size: 16px; color: #1e3a8a; }
+  .modal p { margin-bottom: 12px; color: #555; font-size: 13px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; border-top: 1px solid #e5e7eb; padding-top: 12px; }
   .form-group { margin-bottom: 12px; }
-  .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px; color: #333; }
+  .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px; color: #374151; }
   .form-group input, .form-group select, .form-group textarea { width: 100%; }
-  .form-hint { font-size: 11px; color: #888; margin-top: -8px; margin-bottom: 10px; }
-  .section-title { font-size: 12px; font-weight: bold; color: #2a5298; text-transform: uppercase; margin: 15px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
-  .day-section { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px; margin-bottom: 12px; }
-  .day-section.today { background: #fef3c7; border-color: #fbbf24; }
-  .day-section h4 { font-size: 13px; margin-bottom: 6px; color: #1f2937; display: flex; align-items: center; gap: 6px; }
-  .day-section h4 .today-tag { background: #10b981; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
-  .schedule-edit { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .schedule-edit th { background: #2a5298; color: #fff; padding: 5px; font-size: 11px; text-align: center; }
-  .schedule-edit td { border: 1px solid #ddd; padding: 3px; text-align: center; background: #fff; }
-  .schedule-edit input { padding: 3px 5px; font-size: 12px; text-align: center; width: 100%; }
-  .schedule-edit input[type="number"] { width: 55px; }
-  .schedule-edit input[type="time"] { width: 95px; }
-  .schedule-edit .btn-del { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; padding: 2px 6px; font-size: 10px; border-radius: 3px; cursor: pointer; }
-  .schedule-edit tr.current-row { background: #fef3c7; }
-  .schedule-actions { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
-  .schedule-actions button { font-size: 11px; padding: 4px 8px; }
-  .share-box { background: linear-gradient(135deg, #ede9fe, #ddd6fe); border: 1px solid #a78bfa; border-radius: 6px; padding: 12px; margin-top: 10px; }
-  .share-box h4 { font-size: 13px; color: #5b21b6; margin-bottom: 6px; }
-  .share-box p, .share-box ul { font-size: 11px; color: #4c1d95; margin-bottom: 8px; line-height: 1.5; }
-  .share-box ul { margin-left: 18px; }
-  .share-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .class-list { border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 10px; max-height: 320px; overflow-y: auto; }
-  .class-item { display: flex; align-items: center; padding: 8px 10px; background: #fff; border-bottom: 1px solid #f3f4f6; gap: 8px; }
-  .class-item:last-child { border-bottom: none; }
+  .form-hint { font-size: 11px; color: #6b7280; margin-top: 3px; margin-bottom: 8px; }
+  .section-title { font-size: 12px; font-weight: bold; color: #1e3a8a; text-transform: uppercase; margin: 18px 0 8px; padding-bottom: 4px; border-bottom: 2px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+
+  .class-list, .subject-list { border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 10px; max-height: 240px; overflow-y: auto; }
+  .class-item, .subject-item { display: flex; align-items: center; padding: 8px 10px; background: #fff; border-bottom: 1px solid #f3f4f6; gap: 8px; }
+  .class-item:last-child, .subject-item:last-child { border-bottom: none; }
+  .class-item.active { background: #eff6ff; border-left: 3px solid #2563eb; }
   .class-item .class-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
   .class-item .class-name { font-size: 13px; font-weight: 600; color: #1f2937; }
   .class-item .class-meta { font-size: 11px; color: #6b7280; }
-  .class-item .class-actions { display: flex; gap: 4px; }
-  .class-item .class-actions button { padding: 4px 8px; font-size: 11px; border-radius: 3px; }
-  .class-item.editing { background: #fef3c7; }
-  .class-item.editing input { flex: 1; padding: 5px 8px; font-size: 13px; }
-  .class-item.active { background: #dbeafe; border-left: 3px solid #2a5298; }
-  .class-add { display: flex; gap: 6px; margin-top: 8px; }
-  .class-add input { flex: 1; }
-  .class-empty { padding: 15px; text-align: center; color: #888; font-size: 12px; }
-  .class-toolbar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
-  .subject-list { border: 1px solid #e5e7eb; border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
-  .subject-item { display: flex; align-items: center; padding: 8px 10px; background: #fff; border-bottom: 1px solid #f3f4f6; gap: 8px; }
-  .subject-item:last-child { border-bottom: none; }
-  .subject-item .subj-name { flex: 1; font-size: 13px; }
-  .subject-item .subj-actions { display: flex; gap: 4px; }
-  .subject-item .subj-actions button { padding: 3px 8px; font-size: 11px; border-radius: 3px; }
-  .subject-item.editing { background: #fef3c7; }
-  .subject-item.editing input { flex: 1; padding: 4px 8px; font-size: 13px; }
-  .subject-add { display: flex; gap: 6px; margin-top: 8px; }
-  .subject-add input { flex: 1; }
-  .subject-empty { padding: 15px; text-align: center; color: #888; font-size: 12px; }
+  .class-actions, .subj-actions { display: flex; gap: 4px; }
+  .class-add, .subject-add { display: flex; gap: 6px; margin-top: 6px; }
+  .class-add input, .subject-add input { flex: 1; }
+
   .print-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
-  .radio-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; cursor: pointer; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; }
-  .radio-group label:has(input:checked) { background: #dbeafe; border-color: #2a5298; color: #1e3a8a; }
-  .code-box { background: #1e293b; color: #f8fafc; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; max-height: 140px; overflow-y: auto; white-space: pre; margin-top: 6px; }
-  .toast { position: fixed; top: 15px; right: 15px; background: #10b981; color: #fff; padding: 10px 16px; border-radius: 4px; font-size: 13px; z-index: 300; opacity: 0; transition: opacity .3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-  .toast.show { opacity: 1; }
-  @media (max-width: 640px) {
+  .radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .radio-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; cursor: pointer; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; }
+  .radio-group label:has(input:checked) { background: #dbeafe; border-color: #2563eb; color: #1e40af; font-weight: bold; }
+
+  .day-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 12px; }
+  .schedule-edit { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .schedule-edit th { background: #1e3a8a; color: #fff; padding: 4px; font-size: 11px; text-align: center; }
+  .schedule-edit td { border: 1px solid #e2e8f0; padding: 3px; text-align: center; background: #fff; }
+  .schedule-edit input { padding: 3px 5px; font-size: 12px; text-align: center; width: 100%; }
+  .schedule-actions { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+
+  .code-box { background: #0f172a; color: #f8fafc; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; max-height: 120px; overflow-y: auto; white-space: pre; margin-top: 6px; }
+  .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: #fff; padding: 10px 18px; border-radius: 6px; font-size: 13px; z-index: 300; opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .3s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
     .toolbar, .info-bar, .meeting-form, .table-wrap { padding: 10px; }
-    .nav-group { margin-left: 0; width: 100%; justify-content: space-between; }
+    .nav-group { margin-left: 0; width: 100%; justify-content: space-between; margin-top: 6px; }
     header { flex-direction: column; align-items: flex-start; }
     .print-settings { grid-template-columns: 1fr; }
   }
@@ -141,11 +131,14 @@
 <div class="container">
   <header>
     <div class="school-info">
-      <h1 id="headerSchool"> SMKN 1 GONDANG</h1>
+      <h1 id="headerSchool">SMKN 1 GONDANG</h1>
       <p id="headerSub">Sistem Absensi Siswa • <span id="headerTA">TA 2026/2027</span> • <span id="headerClock">--:--:--</span></p>
       <div class="teacher" id="headerTeacher">👨‍🏫 Guru: - | 📖 Mapel: -</div>
     </div>
-    <div class="school-badge" id="headerBadge">15 Kelas • 50 Pertemuan</div>
+    <div class="header-right">
+      <div id="netBadge" class="net-badge net-online">🟢 Online</div>
+      <div class="school-badge" id="headerBadge">15 Kelas • 50 Pertemuan</div>
+    </div>
   </header>
 
   <div class="toolbar">
@@ -156,13 +149,18 @@
     <label>Mapel:</label>
     <select id="subjectSelect" onchange="changeClassSubject(this.value)"></select>
     <div class="separator"></div>
-    <input type="text" id="searchInput" placeholder="🔍 Cari Siswa / NIS..." oninput="onSearchChange(this.value)" style="width: 170px;">
+    <input type="text" id="searchInput" placeholder="🔍 Cari Siswa / NIS..." oninput="onSearchChange(this.value)" style="width: 160px;">
+    <select id="filterAttendance" onchange="onFilterAttendanceChange(this.value)" style="width: 140px;">
+      <option value="all">Semua Siswa</option>
+      <option value="under75">⚠️ Hadir &lt; 75%</option>
+      <option value="under50">🚨 Hadir &lt; 50%</option>
+    </select>
     <div class="separator"></div>
     <button class="btn-blue" onclick="importExcel()">📥 Import</button>
-    <button class="btn-green" onclick="exportExcel()"> Export</button>
+    <button class="btn-green" onclick="exportExcel()">📤 Export</button>
     <button onclick="downloadTemplate()">📋 Template</button>
     <div class="separator"></div>
-    <button class="btn-teal" onclick="syncToGoogleSheets()" title="Kirim data absensi ke Google Sheets Spreadsheet online">☁️ Sync Sheets</button>
+    <button class="btn-teal" id="btnSync" onclick="manualSync()">☁️ Sync Sheets</button>
     <div class="separator"></div>
     <button class="btn-cyan" onclick="printRekap(currentClass)">🖨️ Cetak</button>
     <button class="btn-cyan" onclick="printAllRekap()">🖨️ Semua</button>
@@ -172,6 +170,8 @@
     <button class="btn-red" onclick="resetData()">🧹 Reset Data</button>
     <button class="btn-outline" onclick="resetTotal()">🗑 Reset Total</button>
     <input type="file" id="fileInput" accept=".xlsx,.xls" style="display:none" onchange="handleFile(event)">
+    <input type="file" id="jsonFileInput" accept=".json" style="display:none" onchange="handleJsonRestore(event)">
+    
     <div class="nav-group">
       <button class="btn-gray" onclick="prevMeeting()">◀</button>
       <span id="meetingLabel" style="font-weight:bold; padding:0 5px;">Pertemuan 1</span>
@@ -189,14 +189,14 @@
     <span class="status-S">S Sakit</span>
     <span class="status-I">I Izin</span>
     <span class="status-A">A Alfa</span>
-    <span style="color:#888">• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa per pertemuan</span>
+    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa per pertemuan • Auto-Sync aktif</span>
   </div>
 </div>
 
 <!-- Modal Settings -->
 <div class="modal-bg" id="settingsModal">
   <div class="modal">
-    <h3>⚙️ Pengaturan Lengkap</h3>
+    <h3>⚙️ Pengaturan Aplikasi</h3>
 
     <div class="section-title">🏫 Identitas Sekolah</div>
     <div class="form-group">
@@ -204,7 +204,7 @@
       <input type="text" id="setSchoolName" maxlength="60">
     </div>
     <div class="form-group">
-      <label>Alamat Sekolah <span style="font-weight:normal; color:#888;">(opsional)</span></label>
+      <label>Alamat Sekolah</label>
       <input type="text" id="setSchoolAddress" maxlength="100">
     </div>
     <div class="form-group">
@@ -218,18 +218,25 @@
       <input type="text" id="setTeacherName" maxlength="60">
     </div>
     <div class="form-group">
-      <label>NIP <span style="font-weight:normal; color:#888;">(opsional)</span></label>
+      <label>NIP</label>
       <input type="text" id="setNip" maxlength="30">
     </div>
 
-    <div class="section-title">☁️ Integrasi Google Sheets (Online Sync)</div>
+    <div class="section-title">📅 Pengaturan Jumlah Pertemuan</div>
+    <div class="form-group">
+      <label>Batas Maksimal Pertemuan (Pertemuan Limit)</label>
+      <input type="number" id="setMaxMeetings" min="1" max="200" value="50">
+      <div class="form-hint">Atur berapa banyak batas maksimal pertemuan per kelas (Default: 50).</div>
+    </div>
+
+    <div class="section-title">☁️ Integrasi Google Sheets (Auto-Sync & Offline Queue)</div>
     <div class="form-group">
       <label>Google Apps Script Web App URL</label>
       <input type="url" id="setGScriptUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
     </div>
-    <p class="form-hint">Data kelas aktif akan otomatis terkirim dan tersusun rapi di tab Google Spreadsheet Anda saat tombol <b>☁️ Sync Sheets</b> diklik.</p>
+    <p class="form-hint">Perubahan saat OFFLINE akan otomatis dikirim ke Google Spreadsheet saat perangkat kembali ONLINE.</p>
     <details style="font-size:12px; color:#4b5563; margin-bottom:12px;">
-      <summary style="cursor:pointer; font-weight:bold; color:#2a5298;">📋 Lihat Contoh Kode Google Apps Script</summary>
+      <summary style="cursor:pointer; font-weight:bold; color:#1e3a8a;">📋 Lihat Contoh Kode Apps Script</summary>
       <div class="code-box">function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -241,7 +248,7 @@
     sheet.appendRow([]);
     var headers = ["No", "NIS", "Nama Siswa"];
     for(var m=1; m<=data.meetings; m++) headers.push("P" + m);
-    headers.push("H", "S", "I", "A", "% Hadir", "Catatan Hari Ini");
+    headers.push("H", "S", "I", "A", "% Hadir", "Catatan");
     sheet.appendRow(headers);
     data.rows.forEach(function(r) { sheet.appendRow(r); });
     return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
@@ -252,30 +259,22 @@
     </details>
 
     <div class="section-title">📋 Daftar Kelas (CRUD)</div>
-    <p style="font-size:11px; color:#666; margin-bottom:8px;">
-      Tambah, edit, atau hapus kelas sesuai kebutuhan. Baris biru = kelas yang sedang aktif.
-    </p>
     <div id="classListContainer"></div>
     <div class="class-add">
-      <input type="text" id="newClassInput" placeholder="Nama kelas baru (contoh: X DKV 3)..." maxlength="30">
+      <input type="text" id="newClassInput" placeholder="Nama kelas baru (contoh: X RPL 1)..." maxlength="30">
       <button class="btn-green" onclick="addClass()">➕ Tambah Kelas</button>
     </div>
-    <div class="class-toolbar">
-      <button class="btn-orange" onclick="resetClassesToDefault()">🔄 Reset ke 15 Kelas Default</button>
+    <div style="display:flex; gap:6px; margin-top:8px;">
+      <button class="btn-orange" onclick="resetClassesToDefault()">🔄 Reset Kelas Default</button>
       <button class="btn-gray" onclick="sortClasses()">↕️ Urutkan Nama</button>
     </div>
-    <div class="form-hint">💡 Minimal 1 kelas harus ada. Menghapus kelas akan menghapus semua data siswa & absensinya.</div>
 
     <div class="section-title">📚 Daftar Mata Pelajaran</div>
-    <p style="font-size:11px; color:#666; margin-bottom:8px;">
-      Kelola daftar mata pelajaran. Setiap kelas dapat memilih mapel dari daftar ini.
-    </p>
     <div id="subjectListContainer"></div>
     <div class="subject-add">
-      <input type="text" id="newSubjectInput" placeholder="Nama mata pelajaran baru..." maxlength="40">
-      <button class="btn-green" onclick="addSubject()">➕ Tambah</button>
+      <input type="text" id="newSubjectInput" placeholder="Mata pelajaran baru..." maxlength="40">
+      <button class="btn-green" onclick="addSubject()">➕ Tambah Mapel</button>
     </div>
-    <div class="form-hint">💡 Minimal 1 mata pelajaran harus ada. Mapel yang sedang dipakai kelas tidak bisa dihapus.</div>
 
     <div class="section-title">🖨️ Pengaturan Cetak</div>
     <div class="print-settings">
@@ -291,33 +290,19 @@
       <div class="form-group">
         <label>Orientasi</label>
         <div class="radio-group">
-          <label><input type="radio" name="setOrientation" value="portrait" checked> 📄 Portrait</label>
+          <label><input type="radio" name="setOrientation" value="portrait"> 📄 Portrait</label>
           <label><input type="radio" name="setOrientation" value="landscape"> 📄 Landscape</label>
         </div>
       </div>
     </div>
 
     <div class="section-title">🕐 Jadwal Pelajaran per Hari</div>
-    <p style="font-size:11px; color:#666; margin-bottom:8px;">
-      Edit jadwal untuk 3 kategori hari. Section <b style="background:#10b981;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px;">HARI INI</b> adalah jadwal aktif.
-    </p>
     <div id="scheduleEditContainer"></div>
 
-    <div class="section-title">💾 Bagikan Aplikasi</div>
-    <div class="share-box">
-      <h4>📤 Download HTML dengan Semua Data</h4>
-      <p>Unduh file HTML baru berisi SEMUA perubahan. File bisa dibagikan dan langsung dipakai.</p>
-      <ul>
-        <li>✅ Identitas sekolah, guru, tahun ajaran, URL Sync</li>
-        <li>✅ Daftar kelas + mapel per kelas</li>
-        <li>✅ Daftar mata pelajaran</li>
-        <li>✅ Jadwal pelajaran (Senin / Selasa-Kamis / Jumat)</li>
-        <li>✅ Data siswa, absensi, catatan khusus, materi, pengaturan cetak</li>
-      </ul>
-      <div class="share-actions">
-        <button class="btn-purple" onclick="downloadHTML()">💾 Download HTML</button>
-        <button class="btn-gray" onclick="clearEmbeddedData()">🗑 Hapus Data Ter-Embed</button>
-      </div>
+    <div class="section-title">💾 Backup & Restore Database (.JSON)</div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">
+      <button class="btn-blue" onclick="backupJSON()">💾 Download Backup (.json)</button>
+      <button class="btn-orange" onclick="triggerRestoreJSON()">📂 Restore Backup (.json)</button>
     </div>
 
     <div class="modal-actions">
@@ -329,27 +314,26 @@
 
 <!-- Modal Catatan Siswa -->
 <div class="modal-bg" id="noteModal">
-  <div class="modal" style="max-width: 420px;">
+  <div class="modal" style="max-width: 440px;">
     <h3 id="noteModalTitle">📝 Catatan Siswa</h3>
     <p id="noteModalSubtitle" style="font-size:12px; color:#666; margin-bottom:8px;"></p>
     <div class="form-group">
-      <label>Keterangan Tambahan / Catatan Khusus:</label>
-      <textarea id="noteModalInput" placeholder="Contoh: Dispen lomba LKS, Pulang jam ke-5, Surat dokter..." rows="3"></textarea>
+      <label>Keterangan Tambahan / Dispensasi / Surat:</label>
+      <textarea id="noteModalInput" placeholder="Contoh: Sakit tipes (surat dokter), LKS IT Software..." rows="3"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn-outline" onclick="deleteStudentNote()">Hapus Catatan</button>
+      <button class="btn-outline" onclick="deleteStudentNote()">Hapus</button>
       <button onclick="closeNoteModal()">Tutup</button>
       <button class="btn-green" onclick="saveStudentNote()">💾 Simpan</button>
     </div>
   </div>
 </div>
 
-<!-- Modal Konfirmasi -->
+<!-- Modal Konfirmasi Universal -->
 <div class="modal-bg" id="modal">
-  <div class="modal">
+  <div class="modal" style="max-width: 460px;">
     <h3 id="modalTitle">Konfirmasi</h3>
-    <p id="modalMsg"></p>
-    <div class="keep-note" id="modalNote" style="display:none"></div>
+    <p id="modalMsg" style="white-space: pre-line;"></p>
     <div class="modal-actions">
       <button onclick="closeModal()">Batal</button>
       <button class="btn-red" id="modalOk">Ya, Lanjutkan</button>
@@ -360,10 +344,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===== KONFIGURASI ===== */
+/* ===== KONFIGURASI DEFAULT ===== */
 const DEFAULT_CLASS_COUNT = 15;
-const MAX_MEETINGS = 50;
-const STORAGE_KEY = 'absensiSiswa_v15';
+const STORAGE_KEY = 'absensiSiswa_v16';
 const STATUS_CYCLE = ['H', 'S', 'I', 'A'];
 const DEFAULT_SUBJECTS = ['Informatika', 'PAI', 'PKK'];
 const PAPER_SIZES = {
@@ -373,7 +356,6 @@ const PAPER_SIZES = {
   'Legal': { w: 216, h: 356, label: 'Legal US' }
 };
 
-/* ===== JADWAL DEFAULT ===== */
 const DEFAULT_SCHEDULE_SENIN = [
   { hour: 1, start: '07:00', end: '07:45' }, { hour: 2, start: '07:45', end: '08:30' },
   { hour: 3, start: '08:30', end: '09:15' }, { hour: 4, start: '09:15', end: '10:00' },
@@ -400,16 +382,21 @@ const DEFAULT_SCHEDULE_JUMAT = [
   { hour: 11, start: '13:40', end: '14:20' }
 ];
 
-/* ===== STATE ===== */
+/* ===== STATE MANAGEMENT ===== */
 let state = loadState();
 let currentClass = 0;
 let currentMeeting = 1;
 let currentSearchQuery = '';
+let currentAttendanceFilter = 'all';
 let activeNoteStudentId = null;
 let clockInterval = null;
-let tempSchedule = { senin: [], selasa_kamis: [], jumat: [] };
-let tempSubjects = [];
+let syncTimeout = null;
+let isSyncing = false;
+
+// Draft sementara saat membuka modal settings
 let tempClasses = [];
+let tempSubjects = [];
+let tempSchedule = { senin: [], selasa_kamis: [], jumat: [] };
 
 function defaultState() {
   const classes = [];
@@ -428,7 +415,9 @@ function defaultState() {
     academicYear: '2026/2027',
     teacherName: '',
     nip: '',
+    maxMeetings: 50,
     gscriptUrl: '',
+    hasPendingSync: false,
     subjects: [...DEFAULT_SUBJECTS],
     printSettings: { paperSize: 'A4', orientation: 'portrait' },
     schedule: {
@@ -440,93 +429,71 @@ function defaultState() {
   };
 }
 
-function getEmbeddedState() {
+function loadState() {
   try {
     const el = document.getElementById('embedded-data');
-    if (!el) return null;
-    const txt = (el.textContent || '').trim();
-    if (!txt) return null;
-    return JSON.parse(txt);
-  } catch(e) { return null; }
-}
-
-function loadState() {
-  const embedded = getEmbeddedState();
-  if (embedded && embedded.classes) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(embedded)); } catch(e) {}
-    return migrateState(embedded);
-  }
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const legacy = !raw ? (localStorage.getItem('absensiSiswa_v14') || localStorage.getItem('absensiSiswa_v13') || localStorage.getItem('absensiSiswa_v12')) : raw;
-    if (legacy) return migrateState(JSON.parse(legacy));
+    if (el && el.textContent.trim()) {
+      const parsed = JSON.parse(el.textContent.trim());
+      if (parsed && parsed.classes) return migrateState(parsed);
+    }
   } catch(e) {}
+
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('absensiSiswa_v15');
+    if (raw) return migrateState(JSON.parse(raw));
+  } catch(e) {}
+
   return defaultState();
 }
 
 function migrateState(s) {
   if (!s || !s.classes) return defaultState();
-  if (!s.schoolName) s.schoolName = 'SMKN 1 GONDANG';
-  if (s.schoolAddress === undefined) s.schoolAddress = '';
-  if (!s.academicYear) s.academicYear = '2026/2027';
-  if (!s.teacherName) s.teacherName = '';
-  if (!s.nip) s.nip = '';
-  if (s.gscriptUrl === undefined) s.gscriptUrl = '';
+  s.schoolName = s.schoolName || 'SMKN 1 GONDANG';
+  s.schoolAddress = s.schoolAddress || '';
+  s.academicYear = s.academicYear || '2026/2027';
+  s.teacherName = s.teacherName || '';
+  s.nip = s.nip || '';
+  s.maxMeetings = parseInt(s.maxMeetings) || 50;
+  s.gscriptUrl = s.gscriptUrl || '';
+  s.hasPendingSync = !!s.hasPendingSync;
 
-  if (!Array.isArray(s.subjects)) {
-    const oldSubject = s.subject || 'Informatika';
-    s.subjects = [oldSubject];
-    delete s.subject;
-  }
-  if (s.subjects.length === 0) s.subjects = [...DEFAULT_SUBJECTS];
+  if (!Array.isArray(s.subjects) || s.subjects.length === 0) s.subjects = [...DEFAULT_SUBJECTS];
+  if (!s.printSettings) s.printSettings = { paperSize: 'A4', orientation: 'portrait' };
 
-  if (!s.printSettings || typeof s.printSettings !== 'object') {
-    s.printSettings = { paperSize: 'A4', orientation: 'portrait' };
-  }
-  if (!PAPER_SIZES[s.printSettings.paperSize]) s.printSettings.paperSize = 'A4';
-  if (!['portrait', 'landscape'].includes(s.printSettings.orientation)) s.printSettings.orientation = 'portrait';
-
-  if (!s.schedule || typeof s.schedule !== 'object' || Array.isArray(s.schedule)) {
-    const oldArr = Array.isArray(s.schedule) ? s.schedule : DEFAULT_SCHEDULE_SELASA_KAMIS;
+  if (!s.schedule || !s.schedule.senin) {
     s.schedule = {
       senin: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SENIN)),
-      selasa_kamis: JSON.parse(JSON.stringify(oldArr)),
+      selasa_kamis: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SELASA_KAMIS)),
       jumat: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_JUMAT))
     };
-  } else {
-    if (!Array.isArray(s.schedule.senin)) s.schedule.senin = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SENIN));
-    if (!Array.isArray(s.schedule.selasa_kamis)) s.schedule.selasa_kamis = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SELASA_KAMIS));
-    if (!Array.isArray(s.schedule.jumat)) s.schedule.jumat = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_JUMAT));
   }
 
-  s.classes.forEach((c, i) => {
-    if (!c.id) c.id = 'c_' + (i+1) + '_' + Date.now();
+  s.classes.forEach((c, idx) => {
+    if (!c.id) c.id = 'c_' + (idx+1) + '_' + Date.now();
     if (!c.students) c.students = [];
     if (!c.attendance) c.attendance = {};
     if (!c.notes) c.notes = {};
     if (!c.meetingsData) c.meetingsData = {};
-    c.meetings = Math.min(MAX_MEETINGS, Number(c.meetings) || 0);
+    c.meetings = Math.min(s.maxMeetings, Number(c.meetings) || 0);
     if (!c.subject || !s.subjects.includes(c.subject)) c.subject = s.subjects[0];
-    if (!c.name) c.name = `Kelas ${i+1}`;
+    if (!c.name) c.name = `Kelas ${idx+1}`;
   });
 
-  if (s.classes.length === 0) {
-    for (let i = 1; i <= DEFAULT_CLASS_COUNT; i++) {
-      s.classes.push({
-        id: 'c_' + i + '_' + Date.now(),
-        name: `Kelas ${i}`,
-        subject: s.subjects[0],
-        students: [], attendance: {}, notes: {},
-        meetings: 0, meetingsData: {}
-      });
-    }
-  }
   return s;
 }
 
-function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  catch(e) { toast('Penyimpanan penuh! Export Excel segera.', 'error'); }
+function saveState(triggerAutoSync = true) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch(e) {
+    toast('Memori browser hampir penuh!', 'error');
+  }
+
+  updateNetStatusUI();
+
+  if (triggerAutoSync && state.gscriptUrl) {
+    queueAutoSync();
+  }
 }
 
 function esc(s) {
@@ -534,66 +501,51 @@ function esc(s) {
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ===== JADWAL PER HARI ===== */
+/* ===== TANGGAL & WAKTU REAL-TIME (CLIENT-SIDE OFFLINE/ONLINE) ===== */
 const DAY_NAMES = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
-function getScheduleForDay(dayOfWeek) {
-  if (dayOfWeek === 1) return state.schedule.senin;
-  if (dayOfWeek === 5) return state.schedule.jumat;
-  return state.schedule.selasa_kamis;
+const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+function getDeviceNow() { return new Date(); }
+
+function getDeviceDateISO() {
+  const now = getDeviceNow();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
-function getScheduleForDate(dateStr) {
-  if (!dateStr) return getScheduleForDay(new Date().getDay());
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return getScheduleForDay(new Date().getDay());
-  return getScheduleForDay(d.getDay());
-}
-function getDayCategory(dayOfWeek) {
-  if (dayOfWeek === 1) return 'senin';
-  if (dayOfWeek === 5) return 'jumat';
-  return 'selasa_kamis';
-}
-function getDayCategoryLabel(cat) {
-  if (cat === 'senin') return 'SENIN';
-  if (cat === 'jumat') return 'JUMAT';
-  return 'SELASA - KAMIS';
-}
-function getSchedule() { return getScheduleForDay(new Date().getDay()); }
-function timeToMinutes(timeStr) {
-  if (!timeStr || typeof timeStr !== 'string') return 0;
-  const parts = timeStr.split(':').map(Number);
-  if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return 0;
-  return parts[0] * 60 + parts[1];
-}
-function detectCurrentHour() {
-  const sched = getSchedule().slice().sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start));
-  if (sched.length === 0) return 1;
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const firstStart = timeToMinutes(sched[0].start);
-  if (nowMins < firstStart) return sched[0].hour;
-  for (let i = sched.length - 1; i >= 0; i--) {
-    if (nowMins >= timeToMinutes(sched[i].start)) return sched[i].hour;
-  }
-  return sched[0].hour;
-}
-function getCurrentHourInfo() {
-  const sched = getSchedule().slice().sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start));
-  if (sched.length === 0) return { hour: 1, schedule: {hour:1,start:'-',end:'-'}, status: 'before', nowMins: 0 };
-  const detected = detectCurrentHour();
-  const cur = sched.find(s => s.hour === detected) || sched[0];
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const startMins = timeToMinutes(cur.start);
-  const endMins = timeToMinutes(cur.end);
-  let status = 'active';
-  if (nowMins < startMins) status = 'before';
-  else if (nowMins >= endMins) status = 'after';
-  return { hour: detected, schedule: cur, status, nowMins };
-}
+
 function formatClock() {
-  const now = new Date();
+  const now = getDeviceNow();
   return [now.getHours(), now.getMinutes(), now.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
 }
+
+function timeToMinutes(timeStr) {
+  if (!timeStr) return 0;
+  const p = timeStr.split(':').map(Number);
+  return (p[0]||0) * 60 + (p[1]||0);
+}
+
+function getScheduleForDate(dateStr) {
+  const d = dateStr ? new Date(dateStr) : getDeviceNow();
+  const dow = isNaN(d.getTime()) ? getDeviceNow().getDay() : d.getDay();
+  if (dow === 1) return state.schedule.senin;
+  if (dow === 5) return state.schedule.jumat;
+  return state.schedule.selasa_kamis;
+}
+
+function detectCurrentHour(sched) {
+  const list = sched.slice().sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start));
+  if (list.length === 0) return 1;
+  const now = getDeviceNow();
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  if (nowMins < timeToMinutes(list[0].start)) return list[0].hour;
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (nowMins >= timeToMinutes(list[i].start)) return list[i].hour;
+  }
+  return list[0].hour;
+}
+
 function startClock() {
   if (clockInterval) clearInterval(clockInterval);
   const update = () => {
@@ -604,34 +556,172 @@ function startClock() {
   clockInterval = setInterval(update, 1000);
 }
 
-/* ===== HEADER ===== */
-function renderHeader() {
-  document.getElementById('headerSchool').textContent = ' ' + state.schoolName;
-  document.getElementById('headerTA').textContent = 'TA ' + state.academicYear;
-  const teacher = state.teacherName || '-';
-  const subject = state.classes[currentClass] ? state.classes[currentClass].subject || '-' : '-';
-  document.getElementById('headerTeacher').textContent = `👨‍🏫 Guru: ${teacher} | 📖 Mapel: ${subject}`;
-  document.getElementById('headerBadge').textContent = `${state.classes.length} Kelas • ${MAX_MEETINGS} Pertemuan`;
+/* ===== SINKRONISASI & OFFLINE QUEUE ===== */
+function updateNetStatusUI() {
+  const badge = document.getElementById('netBadge');
+  if (!badge) return;
+  if (!navigator.onLine) {
+    badge.className = 'net-badge net-offline';
+    badge.innerHTML = '🔴 Offline (Disimpan Lokal)';
+  } else if (state.hasPendingSync) {
+    badge.className = 'net-badge net-pending';
+    badge.innerHTML = '🟡 Menunggu Sync...';
+  } else {
+    badge.className = 'net-badge net-online';
+    badge.innerHTML = '🟢 Online & Ter-sync';
+  }
 }
 
-/* ===== RENDER SELECTS ===== */
+window.addEventListener('online', () => {
+  updateNetStatusUI();
+  toast('🌐 Terhubung ke Internet. Menjalankan sinkronisasi...');
+  if (state.hasPendingSync) queueAutoSync(300);
+});
+
+window.addEventListener('offline', () => {
+  updateNetStatusUI();
+  toast('📴 Mode Offline. Data tetap aman di memori HP/Laptop.');
+});
+
+function queueAutoSync(delay = 1800) {
+  state.hasPendingSync = true;
+  updateNetStatusUI();
+  if (syncTimeout) clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(() => {
+    if (navigator.onLine && state.gscriptUrl) {
+      executeSync(true);
+    }
+  }, delay);
+}
+
+async function executeSync(isSilent = false) {
+  if (isSyncing || !state.gscriptUrl) return;
+  if (!navigator.onLine) {
+    if (!isSilent) toast('Tidak ada koneksi internet. Data tersimpan di antrean.', 'error');
+    return;
+  }
+
+  isSyncing = true;
+  const btn = document.getElementById('btnSync');
+  if (btn) btn.disabled = true;
+
+  try {
+    const c = state.classes[currentClass];
+    if (!c || c.students.length === 0) {
+      state.hasPendingSync = false;
+      saveState(false);
+      isSyncing = false;
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    const rows = c.students.map((st, idx) => {
+      const r = [idx + 1, st.nis || '', st.name];
+      let h = 0, s = 0, i = 0, a = 0;
+      for (let m = 1; m <= c.meetings; m++) {
+        const v = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
+        r.push(v);
+        if (v === 'H') h++; else if (v === 'S') s++; else if (v === 'I') i++; else a++;
+      }
+      const pct = c.meetings > 0 ? Math.round((h / c.meetings) * 100) + '%' : '100%';
+      const note = (c.notes && c.notes[st.id] && c.notes[st.id][currentMeeting]) || '';
+      r.push(h, s, i, a, pct, note);
+      return r;
+    });
+
+    const payload = {
+      schoolName: state.schoolName,
+      academicYear: state.academicYear,
+      teacherName: state.teacherName || '-',
+      className: c.name,
+      subject: c.subject,
+      meetings: c.meetings,
+      currentMeeting: currentMeeting,
+      timestamp: new Date().toISOString(),
+      rows: rows
+    };
+
+    await fetch(state.gscriptUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+
+    state.hasPendingSync = false;
+    saveState(false);
+    updateNetStatusUI();
+    if (!isSilent) toast(`✅ Sukses sync kelas "${c.name}" ke Sheets!`);
+  } catch (err) {
+    state.hasPendingSync = true;
+    updateNetStatusUI();
+    if (!isSilent) toast('Gagal sync: ' + err.message, 'error');
+  } finally {
+    isSyncing = false;
+    if (btn) btn.disabled = false;
+  }
+}
+
+function manualSync() {
+  if (!state.gscriptUrl) {
+    showConfirm('☁️ Google Sheets Belum Terhubung',
+      'URL Google Apps Script belum diatur.\nBuka Settings untuk memasukkan URL Web App?',
+      () => openSettingsModal());
+    return;
+  }
+  executeSync(false);
+}
+
+/* ===== RENDERING UTAMA ===== */
+function render() {
+  // Proteksi index kelas out of bounds
+  if (state.classes.length === 0) {
+    state.classes.push({
+      id: 'c_' + Date.now(),
+      name: 'Kelas 1',
+      subject: state.subjects[0],
+      students: [], attendance: {}, notes: {},
+      meetings: 0, meetingsData: {}
+    });
+  }
+  if (currentClass >= state.classes.length) currentClass = 0;
+  if (currentClass < 0) currentClass = 0;
+
+  const c = state.classes[currentClass];
+  if (currentMeeting > c.meetings) currentMeeting = Math.max(1, c.meetings);
+
+  renderHeader();
+  renderClassSelect();
+  renderSubjectSelect();
+  renderInfo();
+  renderMeetingForm();
+  renderTable();
+  updateNetStatusUI();
+}
+
+function renderHeader() {
+  const c = state.classes[currentClass];
+  document.getElementById('headerSchool').textContent = state.schoolName;
+  document.getElementById('headerTA').textContent = 'TA ' + state.academicYear;
+  const teacher = state.teacherName || '-';
+  const subject = c ? c.subject || '-' : '-';
+  document.getElementById('headerTeacher').textContent = `👨‍🏫 Guru: ${teacher} | 📖 Mapel: ${subject}`;
+  document.getElementById('headerBadge').textContent = `${state.classes.length} Kelas • Max ${state.maxMeetings} Pertemuan`;
+}
+
 function renderClassSelect() {
   const sel = document.getElementById('classSelect');
   sel.innerHTML = '';
-  state.classes.forEach((c, i) => {
+  state.classes.forEach((c, idx) => {
     const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = `${c.name} (${c.students.length})`;
+    opt.value = idx;
+    opt.textContent = `${c.name} (${c.students.length} siswa)`;
     sel.appendChild(opt);
   });
-  if (currentClass >= state.classes.length) currentClass = 0;
   sel.value = currentClass;
   sel.onchange = e => {
     currentClass = +e.target.value;
     currentMeeting = Math.max(1, state.classes[currentClass].meetings);
-    currentSearchQuery = '';
-    const sInput = document.getElementById('searchInput');
-    if (sInput) sInput.value = '';
     render();
   };
 }
@@ -639,261 +729,298 @@ function renderClassSelect() {
 function renderSubjectSelect() {
   const sel = document.getElementById('subjectSelect');
   sel.innerHTML = '';
-  state.subjects.forEach(subj => {
+  state.subjects.forEach(s => {
     const opt = document.createElement('option');
-    opt.value = subj;
-    opt.textContent = subj;
+    opt.value = s;
+    opt.textContent = s;
     sel.appendChild(opt);
   });
-  sel.value = state.classes[currentClass].subject;
+  const c = state.classes[currentClass];
+  if (c) sel.value = c.subject;
 }
 
-function changeClassSubject(newSubject) {
-  if (!state.subjects.includes(newSubject)) {
-    toast('Mata pelajaran tidak valid!', 'error');
-    return;
+function changeClassSubject(val) {
+  const c = state.classes[currentClass];
+  if (c) {
+    c.subject = val;
+    saveState(true);
+    renderHeader();
+    toast(`📖 Mapel kelas ${c.name} diubah ke ${val}`);
   }
-  state.classes[currentClass].subject = newSubject;
-  saveState();
-  renderHeader();
-  toast(`📖 Mapel kelas ${state.classes[currentClass].name} → ${newSubject}`);
 }
 
-/* ===== INFO BAR ===== */
 function renderInfo() {
   const c = state.classes[currentClass];
   const bar = document.getElementById('infoBar');
   if (c.meetings === 0) {
     bar.innerHTML = `<span>👥 Siswa: <b>${c.students.length}</b></span>
-      <span>📅 Belum ada pertemuan — klik <b>+ Pertemuan</b></span>`;
+      <span>📅 Belum ada pertemuan — Klik <b>+ Pertemuan</b> untuk memulai absensi</span>`;
     return;
   }
-  let h=0,s=0,i=0,a=0;
+  let h=0, s=0, i=0, a=0;
   c.students.forEach(st => {
-    const v = (c.attendance[st.id] && c.attendance[st.id][currentMeeting]) || 'H';
-    if (v==='H') h++; else if (v==='S') s++; else if (v==='I') i++; else a++;
+    const stt = (c.attendance[st.id] && c.attendance[st.id][currentMeeting]) || 'H';
+    if (stt === 'H') h++; else if (stt === 'S') s++; else if (stt === 'I') i++; else a++;
   });
   const total = c.students.length;
-  const pctDay = total > 0 ? Math.round((h / total) * 100) : 0;
+  const pct = total > 0 ? Math.round((h / total) * 100) : 0;
   bar.innerHTML = `
     <span>👥 Total: <b>${total}</b></span>
     <span class="status-H">H Hadir: <b>${h}</b></span>
     <span class="status-S">S Sakit: <b>${s}</b></span>
     <span class="status-I">I Izin: <b>${i}</b></span>
     <span class="status-A">A Alfa: <b>${a}</b></span>
-    <span>📊 Kehadiran Hari Ini: <b>${pctDay}%</b></span>
-    <span>📅 Pertemuan: <b>${currentMeeting}/${c.meetings}</b></span>`;
+    <span>📊 Kehadiran Hari Ini: <b>${pct}%</b></span>
+    <span>📅 Pertemuan: <b>${currentMeeting}/${c.meetings}</b> (Max: ${state.maxMeetings})</span>
+  `;
 }
 
-/* ===== FORM PERTEMUAN ===== */
+/* ===== FORM PERTEMUAN (REAL-TIME PERANGKAT) ===== */
 function renderMeetingForm() {
   const c = state.classes[currentClass];
   const form = document.getElementById('meetingForm');
   if (c.meetings === 0) {
-    form.innerHTML = `<p style="text-align:center;color:#92400e;font-size:13px;">Klik "+ Pertemuan" untuk memulai — jam otomatis terdeteksi sesuai hari ini</p>`;
+    form.innerHTML = `<p style="text-align:center; color:#92400e; font-size:13px; padding:6px;">Pertemuan belum dibuat. Klik <b>+ Pertemuan</b> untuk mulai mencatat.</p>`;
     return;
   }
-  if (!c.meetingsData[currentMeeting]) c.meetingsData[currentMeeting] = { date:'', hour:1, material:'' };
+
+  if (!c.meetingsData[currentMeeting]) {
+    c.meetingsData[currentMeeting] = { date: getDeviceDateISO(), hour: 1, material: '' };
+  }
   const d = c.meetingsData[currentMeeting];
-  const today = new Date().toISOString().slice(0,10);
-  const meetingDate = d.date || today;
-  const schedForDate = getScheduleForDate(meetingDate).slice().sort((a,b) => a.hour - b.hour);
-  const dayOfWeek = new Date(meetingDate).getDay();
-  const dayName = DAY_NAMES[dayOfWeek];
-  const cat = getDayCategory(dayOfWeek);
-  const catLabel = getDayCategoryLabel(cat);
-  const info = getCurrentHourInfo();
-  const statusText = info.status === 'active' ? '🟢 Sedang berlangsung'
-                   : info.status === 'before' ? '⏳ Belum mulai' : '✅ Sudah selesai';
-  let opts = '';
+  if (!d.date) d.date = getDeviceDateISO();
+
+  const schedForDate = getScheduleForDate(d.date).slice().sort((a,b) => a.hour - b.hour);
+  const curHour = detectCurrentHour(schedForDate);
+  const dateObj = new Date(d.date);
+  const dayName = isNaN(dateObj.getTime()) ? '-' : DAY_NAMES[dateObj.getDay()];
+
+  let options = '';
   schedForDate.forEach(s => {
-    const selected = d.hour == s.hour ? 'selected' : '';
-    opts += `<option value="${s.hour}" ${selected}>Jam Ke-${s.hour} (${s.start} - ${s.end})</option>`;
+    options += `<option value="${s.hour}" ${d.hour == s.hour ? 'selected' : ''}>Jam Ke-${s.hour} (${s.start} - ${s.end})</option>`;
   });
+
   form.innerHTML = `
-    <h3>📝 Pertemuan ${currentMeeting} • ${esc(c.subject)}</h3>
+    <h3>📝 Jurnal Pertemuan ${currentMeeting} • ${esc(c.subject)} (${esc(c.name)})</h3>
     <div class="clock-info">
-      <span>🕐 Waktu sekarang: <b>${formatClock()}</b></span>
-      <span class="auto-badge">Auto: Jam Ke-${info.hour}</span>
-      <span>${statusText}</span>
-      <button class="btn-blue" style="padding:3px 10px; font-size:11px; margin-left:auto;" onclick="autoDetectHour()">🔄 Deteksi Ulang</button>
+      <span>Waktu Perangkat: <b>${formatClock()}</b></span>
+      <span class="auto-badge">Terdeteksi: Jam Ke-${curHour}</span>
+      <button class="btn-blue" style="padding:2px 8px; font-size:11px; margin-left:auto;" onclick="applyAutoHour()">🔄 Pakai Jam Sekarang</button>
     </div>
     <div class="form-row">
-      <div><label>Tanggal Pertemuan</label>
-        <input type="date" id="meetingDate" value="${esc(meetingDate)}" onchange="onDateChange()"></div>
+      <div style="max-width: 200px;">
+        <label>Tanggal Pertemuan</label>
+        <input type="date" id="meetingDate" value="${esc(d.date)}" onchange="onDateChange(this.value)">
+      </div>
+      <div style="max-width: 260px;">
+        <label>Jam Pelajaran (${dayName})</label>
+        <select id="meetingHour" onchange="updateMeetingData()">${options}</select>
+      </div>
       <div>
-        <label>Jam Pelajaran <span style="font-weight:normal; color:#888;">(${catLabel})</span></label>
-        <select id="meetingHour" onchange="updateMeetingData()">${opts}</select>
+        <label>Materi Pembelajaran</label>
+        <input type="text" id="meetingMaterial" value="${esc(d.material || '')}" placeholder="Contoh: Pengenalan Algoritma..." oninput="updateMeetingData()">
       </div>
     </div>
-    <div class="form-row">
-      <div style="flex:3"><label>Materi yang Disampaikan</label>
-        <textarea id="meetingMaterial" placeholder="Tuliskan materi pembelajaran..." onchange="updateMeetingData()">${esc(d.material)}</textarea></div>
-    </div>
-    <div style="font-size:11px; color:#6b7280; margin-top:4px;">
-      📅 Hari: <b>${dayName}</b> • 📖 Mapel: <b>${esc(c.subject)}</b> • 🏫 Kelas: <b>${esc(c.name)}</b>
-    </div>`;
+  `;
 }
 
-function onDateChange() {
-  const newDate = document.getElementById('meetingDate').value;
+function onDateChange(newDate) {
   const c = state.classes[currentClass];
-  if (c.meetings === 0) return;
+  if (!c || c.meetings === 0) return;
   if (!c.meetingsData[currentMeeting]) c.meetingsData[currentMeeting] = {};
   c.meetingsData[currentMeeting].date = newDate;
-  const schedForDate = getScheduleForDate(newDate).slice().sort((a,b) => a.hour - b.hour);
-  const sel = document.getElementById('meetingHour');
-  const oldVal = sel.value;
-  sel.innerHTML = '';
-  schedForDate.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.hour;
-    opt.textContent = `Jam Ke-${s.hour} (${s.start} - ${s.end})`;
-    sel.appendChild(opt);
-  });
-  const validHours = schedForDate.map(s => String(s.hour));
-  if (validHours.includes(oldVal)) sel.value = oldVal;
-  else if (schedForDate.length > 0) sel.value = schedForDate[0].hour;
-  c.meetingsData[currentMeeting].hour = +sel.value;
-  saveState();
+  const sched = getScheduleForDate(newDate);
+  c.meetingsData[currentMeeting].hour = detectCurrentHour(sched);
+  saveState(true);
   renderMeetingForm();
-  toast(`📅 Jadwal diperbarui untuk hari ${DAY_NAMES[new Date(newDate).getDay()]}`);
+  toast('Tanggal pertemuan diperbarui');
 }
 
-function autoDetectHour() {
+function applyAutoHour() {
   const c = state.classes[currentClass];
-  if (c.meetings === 0) return;
-  const detected = detectCurrentHour();
-  if (!c.meetingsData[currentMeeting]) c.meetingsData[currentMeeting] = {};
-  c.meetingsData[currentMeeting].hour = detected;
-  saveState();
+  if (!c || c.meetings === 0) return;
+  const d = c.meetingsData[currentMeeting];
+  const sched = getScheduleForDate(d.date);
+  const h = detectCurrentHour(sched);
+  d.hour = h;
+  saveState(true);
   renderMeetingForm();
-  toast(`✅ Jam terdeteksi: Jam Ke-${detected}`);
+  toast(`Jam pertemuan diatur ke Jam Ke-${h}`);
 }
 
 function updateMeetingData() {
   const c = state.classes[currentClass];
-  if (c.meetings === 0) return;
+  if (!c || c.meetings === 0) return;
+  const hEl = document.getElementById('meetingHour');
+  const mEl = document.getElementById('meetingMaterial');
   if (!c.meetingsData[currentMeeting]) c.meetingsData[currentMeeting] = {};
-  c.meetingsData[currentMeeting].date = document.getElementById('meetingDate').value;
-  c.meetingsData[currentMeeting].hour = +document.getElementById('meetingHour').value;
-  c.meetingsData[currentMeeting].material = document.getElementById('meetingMaterial').value;
-  saveState();
-  toast('✅ Materi & jadwal tersimpan');
+  if (hEl) c.meetingsData[currentMeeting].hour = +hEl.value;
+  if (mEl) c.meetingsData[currentMeeting].material = mEl.value;
+  saveState(true);
 }
 
-/* ===== FITUR 4: FILTER / SEARCH SISWA ===== */
+/* ===== TABEL ABSENSI DENGAN FITUR 1 (FILTER PERSENTASE) ===== */
 function onSearchChange(val) {
   currentSearchQuery = (val || '').toLowerCase().trim();
   renderTable();
 }
 
-/* ===== TABEL SISWA (FITUR 1 & FITUR 2) ===== */
+function onFilterAttendanceChange(val) {
+  currentAttendanceFilter = val;
+  renderTable();
+}
+
 function renderTable() {
   const wrap = document.getElementById('tableWrap');
   const c = state.classes[currentClass];
   document.getElementById('meetingLabel').textContent = `Pertemuan ${currentMeeting}`;
+
   if (c.meetings === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Belum ada pertemuan</h3><p>Klik "+ Pertemuan" untuk memulai.</p></div>`;
+    wrap.innerHTML = `<div class="empty"><h3>Belum ada pertemuan</h3><p>Klik tombol <b>+ Pertemuan</b> untuk membuka presensi.</p></div>`;
     return;
   }
   if (c.students.length === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Belum ada data siswa</h3><p>Klik "Import" atau "Template" untuk mengisi siswa kelas ${esc(c.name)}.</p></div>`;
+    wrap.innerHTML = `<div class="empty"><h3>Belum ada siswa di ${esc(c.name)}</h3><p>Gunakan tombol <b>Import</b> atau <b>Template</b> untuk menambahkan siswa.</p></div>`;
     return;
   }
 
-  // Filter siswa jika ada search query
-  const filteredStudents = c.students.filter(st => {
-    if (!currentSearchQuery) return true;
-    const nameMatch = (st.name || '').toLowerCase().includes(currentSearchQuery);
-    const nisMatch = (st.nis || '').toLowerCase().includes(currentSearchQuery);
-    return nameMatch || nisMatch;
+  // Filter siswa: Search + Attendance percentage
+  const list = c.students.filter(st => {
+    const matchSearch = (st.name || '').toLowerCase().includes(currentSearchQuery) ||
+                        (st.nis || '').toLowerCase().includes(currentSearchQuery);
+    if (!matchSearch) return false;
+
+    if (currentAttendanceFilter === 'all') return true;
+    let hadir = 0;
+    for (let m = 1; m <= c.meetings; m++) {
+      if ((c.attendance[st.id] && c.attendance[st.id][m]) === 'H') hadir++;
+    }
+    const pct = c.meetings > 0 ? (hadir / c.meetings) * 100 : 100;
+    if (currentAttendanceFilter === 'under75') return pct < 75;
+    if (currentAttendanceFilter === 'under50') return pct < 50;
+    return true;
   });
 
-  if (filteredStudents.length === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Tidak ditemukan</h3><p>Tidak ada siswa cocok dengan pencarian "<b>${esc(currentSearchQuery)}</b>".</p></div>`;
+  if (list.length === 0) {
+    wrap.innerHTML = `<div class="empty"><h3>Tidak ada siswa yang sesuai</h3><p>Coba ubah kata kunci pencarian atau filter kehadiran.</p></div>`;
     return;
   }
 
   let html = `<table><thead><tr>
     <th style="width:40px">No</th>
-    <th style="width:110px">NIS</th>
+    <th style="width:120px">NIS</th>
     <th>Nama Siswa</th>
-    <th style="width:75px;text-align:center">Status</th>
-    <th style="width:85px;text-align:center">Kehadiran</th>
-    <th style="width:160px">Catatan P${currentMeeting}</th>
-    <th style="width:70px;text-align:center">Aksi</th>
+    <th style="width:80px; text-align:center;">Status</th>
+    <th style="width:120px; text-align:center;">% Hadir</th>
+    <th style="width:160px">Catatan Siswa</th>
+    <th style="width:70px; text-align:center">Aksi</th>
   </tr></thead><tbody>`;
 
-  filteredStudents.forEach((st, idx) => {
+  list.forEach((st, idx) => {
     if (!c.attendance[st.id]) c.attendance[st.id] = {};
-    if (!c.notes) c.notes = {};
-    if (!c.notes[st.id]) c.notes[st.id] = {};
-
     const status = c.attendance[st.id][currentMeeting] || 'H';
     c.attendance[st.id][currentMeeting] = status;
 
-    // FITUR 1: Hitung persentase kehadiran kumulatif
     let hadirCount = 0;
     for (let m = 1; m <= c.meetings; m++) {
-      if ((c.attendance[st.id] && c.attendance[st.id][m]) === 'H') hadirCount++;
+      if (c.attendance[st.id][m] === 'H') hadirCount++;
     }
     const pct = c.meetings > 0 ? Math.round((hadirCount / c.meetings) * 100) : 100;
     const pctClass = pct >= 80 ? 'pct-high' : (pct >= 60 ? 'pct-mid' : 'pct-low');
 
-    // FITUR 2: Keterangan tambahan / Catatan per pertemuan
-    const noteText = c.notes[st.id][currentMeeting] || '';
-    const noteBtn = noteText
-      ? `<span class="note-badge" onclick="openNoteModal('${st.id}')" title="${esc(noteText)}">📝 ${esc(noteText)}</span>`
-      : `<button class="btn-gray" style="padding:2px 8px;font-size:11px;" onclick="openNoteModal('${st.id}')">+ Catatan</button>`;
+    const note = (c.notes && c.notes[st.id] && c.notes[st.id][currentMeeting]) || '';
+    const noteBtn = note
+      ? `<span class="note-badge" onclick="openNoteModal('${st.id}')" title="${esc(note)}">📝 ${esc(note)}</span>`
+      : `<button class="btn-gray" style="padding:2px 8px; font-size:11px;" onclick="openNoteModal('${st.id}')">+ Catatan</button>`;
 
     html += `<tr>
       <td>${idx + 1}</td>
       <td>${esc(st.nis || '-')}</td>
       <td><b>${esc(st.name)}</b></td>
-      <td class="status-cell status-${status}" onclick="cycleStatus('${st.id}')" title="Klik untuk rotasi status">${status}</td>
-      <td style="text-align:center;"><span class="pct-badge ${pctClass}">${pct}% (${hadirCount}/${c.meetings})</span></td>
+      <td class="status-cell status-${status}" onclick="cycleStatus('${st.id}')">${status}</td>
+      <td style="text-align:center"><span class="pct-badge ${pctClass}">${pct}% (${hadirCount}/${c.meetings})</span></td>
       <td>${noteBtn}</td>
-      <td style="text-align:center"><button class="btn-red" style="padding:3px 8px;font-size:11px" onclick="deleteStudent('${st.id}')">Hapus</button></td>
+      <td style="text-align:center"><button class="btn-red" style="padding:3px 6px; font-size:11px;" onclick="deleteStudent('${st.id}')">Hapus</button></td>
     </tr>`;
   });
 
   wrap.innerHTML = html + '</tbody></table>';
 }
 
-function render() {
-  if (state.classes.length === 0) {
-    state.classes.push({
-      id: 'c_default_' + Date.now(),
-      name: 'Kelas 1',
-      subject: state.subjects[0],
-      students: [], attendance: {}, notes: {},
-      meetings: 0, meetingsData: {}
-    });
-  }
+/* ===== ROTASI STATUS & PERTEMUAN ===== */
+function cycleStatus(studentId) {
   const c = state.classes[currentClass];
-  if (currentMeeting > c.meetings) currentMeeting = Math.max(1, c.meetings);
-  renderHeader();
-  renderClassSelect();
-  renderSubjectSelect();
+  if (!c || c.meetings === 0) return;
+  const cur = (c.attendance[studentId] && c.attendance[studentId][currentMeeting]) || 'H';
+  const next = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur) + 1) % STATUS_CYCLE.length];
+  c.attendance[studentId][currentMeeting] = next;
+  saveState(true);
   renderInfo();
-  renderMeetingForm();
   renderTable();
-  saveState();
 }
 
-/* ===== FITUR 2: MODAL CATATAN SISWA ===== */
+function addMeeting() {
+  const c = state.classes[currentClass];
+  if (c.meetings >= state.maxMeetings) {
+    toast(`Sudah mencapai batas maksimal (${state.maxMeetings} pertemuan)! Ubah batas di Settings.`, 'error');
+    return;
+  }
+  c.meetings++;
+  currentMeeting = c.meetings;
+  
+  c.students.forEach(st => {
+    if (!c.attendance[st.id]) c.attendance[st.id] = {};
+    c.attendance[st.id][currentMeeting] = 'H';
+  });
+
+  const todayIso = getDeviceDateISO();
+  const sched = getScheduleForDate(todayIso);
+  const curH = detectCurrentHour(sched);
+  c.meetingsData[currentMeeting] = { date: todayIso, hour: curH, material: '' };
+
+  saveState(true);
+  render();
+  toast(`✅ Pertemuan ${currentMeeting} dibuka`);
+}
+
+function nextMeeting() {
+  const c = state.classes[currentClass];
+  if (c.meetings === 0) { addMeeting(); return; }
+  if (currentMeeting < c.meetings) {
+    currentMeeting++;
+    render();
+  }
+}
+
+function prevMeeting() {
+  if (currentMeeting > 1) {
+    currentMeeting--;
+    render();
+  }
+}
+
+function deleteStudent(studentId) {
+  showConfirm('Hapus Siswa', 'Yakin ingin menghapus siswa ini dari kelas?', () => {
+    const c = state.classes[currentClass];
+    c.students = c.students.filter(s => s.id !== studentId);
+    delete c.attendance[studentId];
+    if (c.notes) delete c.notes[studentId];
+    saveState(true);
+    render();
+    toast('Siswa telah dihapus');
+  });
+}
+
+/* ===== CATATAN SISWA PER PERTEMUAN ===== */
 function openNoteModal(studentId) {
   activeNoteStudentId = studentId;
   const c = state.classes[currentClass];
   const st = c.students.find(s => s.id === studentId);
   if (!st) return;
   document.getElementById('noteModalTitle').textContent = `📝 Catatan Pertemuan ${currentMeeting}`;
-  document.getElementById('noteModalSubtitle').textContent = `Siswa: ${st.name} (${st.nis || '-'}) • Kelas: ${c.name}`;
-  const curNote = (c.notes && c.notes[studentId] && c.notes[studentId][currentMeeting]) || '';
-  document.getElementById('noteModalInput').value = curNote;
+  document.getElementById('noteModalSubtitle').textContent = `Siswa: ${st.name} (${st.nis || '-'}) • ${c.name}`;
+  document.getElementById('noteModalInput').value = (c.notes && c.notes[studentId] && c.notes[studentId][currentMeeting]) || '';
   document.getElementById('noteModal').classList.add('show');
-  setTimeout(() => document.getElementById('noteModalInput').focus(), 80);
 }
 
 function closeNoteModal() {
@@ -906,16 +1033,13 @@ function saveStudentNote() {
   const c = state.classes[currentClass];
   if (!c.notes) c.notes = {};
   if (!c.notes[activeNoteStudentId]) c.notes[activeNoteStudentId] = {};
-  const val = document.getElementById('noteModalInput').value.trim();
-  if (val) {
-    c.notes[activeNoteStudentId][currentMeeting] = val;
-    toast('✅ Catatan siswa disimpan');
-  } else {
-    delete c.notes[activeNoteStudentId][currentMeeting];
-  }
-  saveState();
+  const txt = document.getElementById('noteModalInput').value.trim();
+  if (txt) c.notes[activeNoteStudentId][currentMeeting] = txt;
+  else delete c.notes[activeNoteStudentId][currentMeeting];
+  saveState(true);
   closeNoteModal();
   renderTable();
+  toast('Catatan tersimpan');
 }
 
 function deleteStudentNote() {
@@ -924,753 +1048,330 @@ function deleteStudentNote() {
   if (c.notes && c.notes[activeNoteStudentId]) {
     delete c.notes[activeNoteStudentId][currentMeeting];
   }
-  saveState();
+  saveState(true);
   closeNoteModal();
   renderTable();
   toast('Catatan dihapus');
 }
 
-/* ===== CRUD KELAS (DIPERBAIKI) ===== */
-function renderClassList() {
-  const container = document.getElementById('classListContainer');
-  if (tempClasses.length === 0) {
-    container.innerHTML = '<div class="class-empty">Belum ada kelas. Tambahkan di bawah.</div>';
-    return;
-  }
-  let html = '<div class="class-list">';
-  tempClasses.forEach((cls, idx) => {
-    const isActive = idx === currentClass;
-    const studentCount = cls.students ? cls.students.length : 0;
-    const meetingCount = cls.meetings || 0;
-    html += `<div class="class-item ${isActive ? 'active' : ''}" id="class-item-${idx}">
-      <div class="class-info">
-        <span class="class-name" id="class-name-${idx}">
-          ${isActive ? '🔵 ' : ''}${esc(cls.name)}
-        </span>
-        <span class="class-meta">
-          📖 ${esc(cls.subject || '-')} • 👥 ${studentCount} siswa • 📅 ${meetingCount} pertemuan
-        </span>
-      </div>
-      <div class="class-actions">
-        <button class="btn-blue" onclick="startEditClass(${idx})">✏️ Edit</button>
-        <button class="btn-red" onclick="removeClass(${idx})" ${tempClasses.length === 1 ? 'disabled title="Minimal 1 kelas harus ada"' : ''}>🗑️ Hapus</button>
-      </div>
-    </div>`;
-  });
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-function startEditClass(idx) {
-  const item = document.getElementById(`class-item-${idx}`);
-  const oldName = tempClasses[idx].name;
-  const infoEl = item.querySelector('.class-info');
-  item.classList.add('editing');
-  infoEl.innerHTML = `
-    <input type="text" id="class-edit-${idx}" value="${esc(oldName)}" maxlength="30" placeholder="Nama kelas...">
-    <span class="class-meta">Tekan Enter untuk simpan, Esc untuk batal</span>
-  `;
-  const input = document.getElementById(`class-edit-${idx}`);
-  input.focus();
-  input.select();
-  const actionsEl = item.querySelector('.class-actions');
-  actionsEl.innerHTML = `
-    <button class="btn-green" onclick="saveEditClass(${idx})">💾</button>
-    <button class="btn-gray" onclick="cancelEditClass(${idx})">✖</button>
-  `;
-  input.onkeydown = e => {
-    if (e.key === 'Enter') saveEditClass(idx);
-    if (e.key === 'Escape') cancelEditClass(idx);
-  };
-}
-
-function saveEditClass(idx) {
-  const input = document.getElementById(`class-edit-${idx}`);
-  const newName = input.value.trim();
-  const oldName = tempClasses[idx].name;
-  if (!newName) { toast('Nama kelas tidak boleh kosong!', 'error'); return; }
-  if (newName.length > 30) { toast('Maksimal 30 karakter!', 'error'); return; }
-  if (tempClasses.some((c, i) => i !== idx && c.name.toLowerCase() === newName.toLowerCase())) {
-    toast(`Nama kelas "${newName}" sudah ada!`, 'error'); return;
-  }
-  tempClasses[idx].name = newName;
-  renderClassList();
-  toast(`✅ "${oldName}" → "${newName}"`);
-}
-
-function cancelEditClass(idx) { renderClassList(); }
-
-function addClass() {
-  const input = document.getElementById('newClassInput');
-  let name = input.value.trim();
-  if (!name) {
-    const existingNums = tempClasses.map(c => {
-      const m = c.name.match(/(\d+)$/);
-      return m ? parseInt(m[1]) : 0;
-    });
-    const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
-    name = `Kelas ${maxNum + 1}`;
-  }
-  if (name.length > 30) { toast('Maksimal 30 karakter!', 'error'); return; }
-  if (tempClasses.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-    toast(`Nama kelas "${name}" sudah ada!`, 'error'); return;
-  }
-  tempClasses.push({
-    id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
-    name: name,
-    subject: state.subjects[0],
-    students: [], attendance: {}, notes: {},
-    meetings: 0, meetingsData: {}
-  });
-  input.value = '';
-  renderClassList();
-  toast(`✅ Kelas "${name}" ditambahkan`);
-}
-
-function removeClass(idx) {
-  if (tempClasses.length === 1) {
-    toast('❌ Minimal 1 kelas harus ada!', 'error');
-    return;
-  }
-  const cls = tempClasses[idx];
-  const studentCount = cls.students ? cls.students.length : 0;
-  const meetingCount = cls.meetings || 0;
-  const warnMsg = studentCount > 0 || meetingCount > 0
-    ? `Kelas "${cls.name}" memiliki ${studentCount} siswa dan ${meetingCount} pertemuan. Semua data akan DIHAPUS permanen!`
-    : `Hapus kelas "${cls.name}"?`;
-
-  showConfirm('🗑 Hapus Kelas', warnMsg + '\n\nTindakan ini tidak bisa dibatalkan.', () => {
-    const wasActive = idx === currentClass;
-    tempClasses.splice(idx, 1);
-    if (wasActive) {
-      currentClass = 0;
-      currentMeeting = 1;
-    } else if (idx < currentClass) {
-      currentClass--;
-    }
-    renderClassList();
-    toast(`✅ Kelas "${cls.name}" dihapus`);
-  }, false);
-}
-
-function resetClassesToDefault() {
-  showConfirm('🔄 Reset Daftar Kelas ke Default',
-    'Kembalikan daftar kelas menjadi 15 kelas default (Kelas 1 s/d Kelas 15)?\n\n⚠️ PERINGATAN: Semua data siswa, absensi, dan materi dari kelas yang ada saat ini akan DIHAPUS!',
-    () => {
-      tempClasses = [];
-      for (let i = 1; i <= DEFAULT_CLASS_COUNT; i++) {
-        tempClasses.push({
-          id: 'c_' + i + '_' + Date.now(),
-          name: `Kelas ${i}`,
-          subject: state.subjects[0],
-          students: [], attendance: {}, notes: {},
-          meetings: 0, meetingsData: {}
-        });
-      }
-      currentClass = 0;
-      currentMeeting = 1;
-      renderClassList();
-      toast('✅ Daftar kelas dikembalikan ke 15 kelas default');
-    }, false);
-}
-
-function sortClasses() {
-  const activeName = tempClasses[currentClass] ? tempClasses[currentClass].name : null;
-  tempClasses.sort((a,b) => a.name.localeCompare(b.name, 'id', { numeric: true }));
-  if (activeName) {
-    const newIdx = tempClasses.findIndex(c => c.name === activeName);
-    if (newIdx >= 0) currentClass = newIdx;
-  }
-  renderClassList();
-  toast('✅ Kelas diurutkan berdasarkan nama');
-}
-
-/* ===== CRUD MAPEL ===== */
-function renderSubjectList() {
-  const container = document.getElementById('subjectListContainer');
-  if (tempSubjects.length === 0) {
-    container.innerHTML = '<div class="subject-empty">Belum ada mata pelajaran. Tambahkan di bawah.</div>';
-    return;
-  }
-  let html = '<div class="subject-list">';
-  tempSubjects.forEach((subj, idx) => {
-    const usedBy = state.classes.filter(c => c.subject === subj).length;
-    const canDelete = usedBy === 0 && tempSubjects.length > 1;
-    html += `<div class="subject-item" id="subj-item-${idx}">
-      <span class="subj-name" id="subj-name-${idx}">${esc(subj)}${usedBy > 0 ? ` <span style="color:#6b7280;font-size:11px;">(${usedBy} kelas)</span>` : ''}</span>
-      <div class="subj-actions">
-        <button class="btn-blue" onclick="startEditSubject(${idx})">✏️</button>
-        <button class="btn-red" onclick="removeSubject(${idx})" ${!canDelete ? 'disabled' : ''}>🗑</button>
-      </div>
-    </div>`;
-  });
-  html += '</div>';
-  container.innerHTML = html;
-}
-
-function startEditSubject(idx) {
-  const item = document.getElementById(`subj-item-${idx}`);
-  const nameEl = document.getElementById(`subj-name-${idx}`);
-  const oldName = tempSubjects[idx];
-  item.classList.add('editing');
-  nameEl.outerHTML = `<input type="text" id="subj-edit-${idx}" value="${esc(oldName)}" maxlength="40">`;
-  const input = document.getElementById(`subj-edit-${idx}`);
-  input.focus();
-  input.select();
-  const actionsEl = item.querySelector('.subj-actions');
-  actionsEl.innerHTML = `
-    <button class="btn-green" onclick="saveEditSubject(${idx})">💾</button>
-    <button class="btn-gray" onclick="cancelEditSubject(${idx})">✖</button>
-  `;
-  input.onkeydown = e => {
-    if (e.key === 'Enter') saveEditSubject(idx);
-    if (e.key === 'Escape') cancelEditSubject(idx);
-  };
-}
-
-function saveEditSubject(idx) {
-  const input = document.getElementById(`subj-edit-${idx}`);
-  const newName = input.value.trim();
-  const oldName = tempSubjects[idx];
-  if (!newName) { toast('Nama mapel tidak boleh kosong!', 'error'); return; }
-  if (newName === oldName) { cancelEditSubject(idx); return; }
-  if (tempSubjects.some((s, i) => i !== idx && s.toLowerCase() === newName.toLowerCase())) {
-    toast(`Mapel "${newName}" sudah ada!`, 'error'); return;
-  }
-  tempSubjects[idx] = newName;
-  tempClasses.forEach(c => {
-    if (c.subject === oldName) c.subject = newName;
-  });
-  renderSubjectList();
-  renderClassList();
-  toast(`✅ "${oldName}" → "${newName}"`);
-}
-
-function cancelEditSubject(idx) { renderSubjectList(); }
-
-function addSubject() {
-  const input = document.getElementById('newSubjectInput');
-  const name = input.value.trim();
-  if (!name) { toast('Nama mapel tidak boleh kosong!', 'error'); return; }
-  if (name.length > 40) { toast('Maksimal 40 karakter!', 'error'); return; }
-  if (tempSubjects.some(s => s.toLowerCase() === name.toLowerCase())) {
-    toast(`Mapel "${name}" sudah ada!`, 'error'); return; }
-  tempSubjects.push(name);
-  input.value = '';
-  renderSubjectList();
-  toast(`✅ Mapel "${name}" ditambahkan`);
-}
-
-function removeSubject(idx) {
-  const name = tempSubjects[idx];
-  const usedBy = tempClasses.filter(c => c.subject === name).length;
-  if (usedBy > 0) {
-    toast(`❌ Mapel "${name}" sedang dipakai ${usedBy} kelas.`, 'error');
-    return;
-  }
-  if (tempSubjects.length === 1) {
-    toast('❌ Minimal 1 mata pelajaran harus ada!', 'error');
-    return;
-  }
-  showConfirm(`🗑 Hapus Mata Pelajaran`, `Hapus mapel "${name}"?`, () => {
-    tempSubjects.splice(idx, 1);
-    renderSubjectList();
-    toast(`✅ Mapel "${name}" dihapus`);
-  }, false);
-}
-
-/* ===== SETTINGS MODAL ===== */
-function renderScheduleEditContainer() {
-  const container = document.getElementById('scheduleEditContainer');
-  const todayDow = new Date().getDay();
-  const todayCat = getDayCategory(todayDow);
-  const sections = [
-    { key: 'senin', label: 'SENIN', color: '#dc2626' },
-    { key: 'selasa_kamis', label: 'SELASA - KAMIS', color: '#2a5298' },
-    { key: 'jumat', label: 'JUMAT', color: '#059669' }
-  ];
-  let html = '';
-  sections.forEach(sec => {
-    const isToday = sec.key === todayCat;
-    const sched = tempSchedule[sec.key];
-    const info = isToday ? getCurrentHourInfo() : null;
-    html += `<div class="day-section ${isToday ? 'today' : ''}">
-      <h4 style="color:${sec.color}">
-        🗓️ ${sec.label}
-        ${isToday ? '<span class="today-tag">HARI INI</span>' : ''}
-        <span style="font-weight:normal; color:#6b7280; font-size:11px; margin-left:auto;">${sched.length} jam</span>
-      </h4>
-      <table class="schedule-edit">
-        <thead><tr>
-          <th style="width:35px">No</th>
-          <th style="width:70px">Jam Ke-</th>
-          <th>Mulai</th>
-          <th>Selesai</th>
-          <th style="width:60px">Aksi</th>
-        </tr></thead><tbody>`;
-    sched.forEach((s, idx) => {
-      const isCurrent = isToday && info && s.hour === info.hour;
-      html += `<tr class="${isCurrent ? 'current-row' : ''}">
-        <td>${idx+1}</td>
-        <td><input type="number" min="1" max="99" value="${s.hour}" onchange="updateScheduleField('${sec.key}',${idx},'hour',this.value)"></td>
-        <td><input type="time" value="${esc(s.start)}" onchange="updateScheduleField('${sec.key}',${idx},'start',this.value)"></td>
-        <td><input type="time" value="${esc(s.end)}" onchange="updateScheduleField('${sec.key}',${idx},'end',this.value)"></td>
-        <td><button class="btn-del" onclick="removeScheduleRow('${sec.key}',${idx})">🗑</button></td>
-      </tr>`;
-    });
-    if (sched.length === 0) html += `<tr><td colspan="5" style="padding:8px; color:#888;">Belum ada jam.</td></tr>`;
-    html += `</tbody></table>
-      <div class="schedule-actions">
-        <button class="btn-blue" onclick="addScheduleRow('${sec.key}')">➕ Tambah</button>
-        <button class="btn-orange" onclick="resetScheduleDay('${sec.key}')">🔄 Reset</button>
-        <button class="btn-gray" onclick="sortScheduleDay('${sec.key}')">↕️ Urutkan</button>
-      </div>
-    </div>`;
-  });
-  container.innerHTML = html;
-}
-
-function updateScheduleField(key, idx, field, value) {
-  if (field === 'hour') tempSchedule[key][idx].hour = Math.max(1, parseInt(value) || 1);
-  else tempSchedule[key][idx][field] = value;
-}
-function addScheduleRow(key) {
-  const sched = tempSchedule[key];
-  const maxHour = sched.reduce((m, s) => Math.max(m, s.hour || 0), 0);
-  const lastEnd = sched.length > 0 ? sched.slice().sort((a,b) => timeToMinutes(b.end) - timeToMinutes(a.end))[0].end : '17:00';
-  const endMins = timeToMinutes(lastEnd);
-  const toTime = m => `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
-  sched.push({ hour: maxHour + 1, start: toTime(endMins), end: toTime(endMins + 40) });
-  renderScheduleEditContainer();
-  toast(`✅ Jam baru ditambahkan`);
-}
-function removeScheduleRow(key, idx) {
-  if (tempSchedule[key].length === 0) return;
-  tempSchedule[key].splice(idx, 1);
-  renderScheduleEditContainer();
-}
-function resetScheduleDay(key) {
-  const label = getDayCategoryLabel(key);
-  showConfirm(`🔄 Reset Jadwal ${label}`, `Kembalikan jadwal ${label} ke default?`, () => {
-    if (key === 'senin') tempSchedule.senin = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SENIN));
-    else if (key === 'jumat') tempSchedule.jumat = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_JUMAT));
-    else tempSchedule.selasa_kamis = JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SELASA_KAMIS));
-    renderScheduleEditContainer();
-    toast(`✅ Jadwal ${label} dikembalikan`);
-  }, false);
-}
-function sortScheduleDay(key) {
-  tempSchedule[key].sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start));
-  renderScheduleEditContainer();
-  toast(`✅ Jadwal diurutkan`);
-}
-function validateSchedule() {
-  const keys = ['senin', 'selasa_kamis', 'jumat'];
-  for (const key of keys) {
-    const sched = tempSchedule[key];
-    if (sched.length === 0) continue;
-    const hours = new Set();
-    for (const s of sched) {
-      if (!s.hour || s.hour < 1) return `Jadwal ${getDayCategoryLabel(key)}: jam ke- harus minimal 1`;
-      if (hours.has(s.hour)) return `Jadwal ${getDayCategoryLabel(key)}: jam ke-${s.hour} duplikat!`;
-      hours.add(s.hour);
-      if (!s.start || !s.end) return `Jadwal ${getDayCategoryLabel(key)}, jam ke-${s.hour}: waktu kosong`;
-      if (!/^\d{2}:\d{2}$/.test(s.start) || !/^\d{2}:\d{2}$/.test(s.end))
-        return `Jadwal ${getDayCategoryLabel(key)}, jam ke-${s.hour}: format waktu salah`;
-      if (timeToMinutes(s.start) >= timeToMinutes(s.end))
-        return `Jadwal ${getDayCategoryLabel(key)}, jam ke-${s.hour}: waktu mulai harus < selesai`;
-    }
-  }
-  return null;
-}
-
+/* ===== SETTINGS & PENGATURAN CRUD (FITUR 1 & 4) ===== */
 function openSettingsModal() {
   document.getElementById('setSchoolName').value = state.schoolName;
-  document.getElementById('setSchoolAddress').value = state.schoolAddress || '';
+  document.getElementById('setSchoolAddress').value = state.schoolAddress;
   document.getElementById('setAcademicYear').value = state.academicYear;
-  document.getElementById('setTeacherName').value = state.teacherName || '';
-  document.getElementById('setNip').value = state.nip || '';
+  document.getElementById('setTeacherName').value = state.teacherName;
+  document.getElementById('setNip').value = state.nip;
+  document.getElementById('setMaxMeetings').value = state.maxMeetings || 50;
   document.getElementById('setGScriptUrl').value = state.gscriptUrl || '';
   document.getElementById('setPaperSize').value = state.printSettings.paperSize;
   document.querySelectorAll('input[name="setOrientation"]').forEach(r => {
     r.checked = (r.value === state.printSettings.orientation);
   });
+
+  // Salin draft sementara agar pembatalan modal tidak mengacaukan state aktif
   tempClasses = JSON.parse(JSON.stringify(state.classes));
   tempSubjects = [...state.subjects];
-  tempSchedule = {
-    senin: JSON.parse(JSON.stringify(state.schedule.senin)),
-    selasa_kamis: JSON.parse(JSON.stringify(state.schedule.selasa_kamis)),
-    jumat: JSON.parse(JSON.stringify(state.schedule.jumat))
-  };
+  tempSchedule = JSON.parse(JSON.stringify(state.schedule));
+
   renderClassList();
   renderSubjectList();
-  renderScheduleEditContainer();
+  renderScheduleEdit();
   document.getElementById('settingsModal').classList.add('show');
-  setTimeout(() => document.getElementById('setSchoolName').focus(), 80);
 }
-function closeSettingsModal() { document.getElementById('settingsModal').classList.remove('show'); }
+
+function closeSettingsModal() {
+  document.getElementById('settingsModal').classList.remove('show');
+}
+
+function renderClassList() {
+  const c = document.getElementById('classListContainer');
+  let html = '<div class="class-list">';
+  tempClasses.forEach((cls, idx) => {
+    html += `<div class="class-item ${idx === currentClass ? 'active' : ''}">
+      <div class="class-info">
+        <span class="class-name">${esc(cls.name)}</span>
+        <span class="class-meta">Mapel: ${esc(cls.subject)} • ${cls.students.length} siswa • ${cls.meetings} pertemuan</span>
+      </div>
+      <div class="class-actions">
+        <button class="btn-blue" onclick="renameClassPrompt(${idx})">✏️</button>
+        <button class="btn-red" onclick="removeClass(${idx})" ${tempClasses.length <= 1 ? 'disabled' : ''}>🗑️</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function addClass() {
+  const inp = document.getElementById('newClassInput');
+  const val = inp.value.trim();
+  const name = val || `Kelas ${tempClasses.length + 1}`;
+  if (tempClasses.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+    toast('Nama kelas sudah ada!', 'error'); return;
+  }
+  tempClasses.push({
+    id: 'c_' + Date.now(),
+    name,
+    subject: tempSubjects[0] || 'Informatika',
+    students: [], attendance: {}, notes: {},
+    meetings: 0, meetingsData: {}
+  });
+  inp.value = '';
+  renderClassList();
+}
+
+function renameClassPrompt(idx) {
+  const cur = tempClasses[idx].name;
+  const n = prompt('Masukkan nama baru untuk kelas:', cur);
+  if (n && n.trim() && n.trim() !== cur) {
+    tempClasses[idx].name = n.trim();
+    renderClassList();
+  }
+}
+
+function removeClass(idx) {
+  if (tempClasses.length <= 1) return;
+  if (confirm(`Hapus kelas "${tempClasses[idx].name}" beserta seluruh data di dalamnya?`)) {
+    tempClasses.splice(idx, 1);
+    renderClassList();
+  }
+}
+
+function sortClasses() {
+  tempClasses.sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+  renderClassList();
+}
+
+function resetClassesToDefault() {
+  if (confirm('Kembalikan ke 15 kelas default? Data siswa yang belum disimpan akan hilang.')) {
+    tempClasses = [];
+    for (let i = 1; i <= DEFAULT_CLASS_COUNT; i++) {
+      tempClasses.push({
+        id: 'c_' + i + '_' + Date.now(),
+        name: `Kelas ${i}`,
+        subject: tempSubjects[0] || 'Informatika',
+        students: [], attendance: {}, notes: {},
+        meetings: 0, meetingsData: {}
+      });
+    }
+    renderClassList();
+  }
+}
+
+function renderSubjectList() {
+  const c = document.getElementById('subjectListContainer');
+  let html = '<div class="subject-list">';
+  tempSubjects.forEach((s, idx) => {
+    html += `<div class="subject-item">
+      <span style="flex:1;">${esc(s)}</span>
+      <div class="subj-actions">
+        <button class="btn-red" onclick="removeSubject(${idx})" ${tempSubjects.length <= 1 ? 'disabled' : ''}>🗑️</button>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+  c.innerHTML = html;
+}
+
+function addSubject() {
+  const inp = document.getElementById('newSubjectInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  if (tempSubjects.includes(val)) { toast('Mapel sudah ada!', 'error'); return; }
+  tempSubjects.push(val);
+  inp.value = '';
+  renderSubjectList();
+}
+
+function removeSubject(idx) {
+  if (tempSubjects.length <= 1) return;
+  tempSubjects.splice(idx, 1);
+  renderSubjectList();
+}
+
+function renderScheduleEdit() {
+  const wrap = document.getElementById('scheduleEditContainer');
+  const days = [
+    { key:'senin', label:'Senin' },
+    { key:'selasa_kamis', label:'Selasa - Kamis' },
+    { key:'jumat', label:'Jumat' }
+  ];
+  let html = '';
+  days.forEach(d => {
+    html += `<div class="day-section">
+      <div style="font-weight:bold; margin-bottom:6px; color:#1e3a8a;">Jadwal: ${d.label}</div>
+      <table class="schedule-edit"><thead><tr>
+        <th style="width:50px">Jam</th><th>Mulai</th><th>Selesai</th><th style="width:40px">Aksi</th>
+      </tr></thead><tbody>`;
+    tempSchedule[d.key].forEach((sc, idx) => {
+      html += `<tr>
+        <td><b>${sc.hour}</b></td>
+        <td><input type="time" value="${sc.start}" onchange="tempSchedule['${d.key}'][${idx}].start=this.value"></td>
+        <td><input type="time" value="${sc.end}" onchange="tempSchedule['${d.key}'][${idx}].end=this.value"></td>
+        <td><button class="btn-del" style="background:#fee2e2;color:#991b1b;border:none;border-radius:3px;cursor:pointer;" onclick="tempSchedule['${d.key}'].splice(${idx},1);renderScheduleEdit();">×</button></td>
+      </tr>`;
+    });
+    html += `</tbody></table>
+      <div class="schedule-actions">
+        <button class="btn-blue" style="font-size:11px; padding:3px 8px;" onclick="addScheduleRow('${d.key}')">+ Tambah Jam</button>
+      </div>
+    </div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function addScheduleRow(key) {
+  const list = tempSchedule[key];
+  const nextHour = list.length > 0 ? Math.max(...list.map(s => s.hour)) + 1 : 1;
+  list.push({ hour: nextHour, start: '07:00', end: '07:45' });
+  renderScheduleEdit();
+}
 
 function saveSettings() {
   const name = document.getElementById('setSchoolName').value.trim();
-  const addr = document.getElementById('setSchoolAddress').value.trim();
-  const ta = document.getElementById('setAcademicYear').value.trim();
-  const teacher = document.getElementById('setTeacherName').value.trim();
-  const nip = document.getElementById('setNip').value.trim();
-  const gscriptUrl = document.getElementById('setGScriptUrl').value.trim();
-  const paperSize = document.getElementById('setPaperSize').value;
-  const orientation = document.querySelector('input[name="setOrientation"]:checked').value;
-
+  const maxM = parseInt(document.getElementById('setMaxMeetings').value) || 50;
   if (!name) { toast('Nama sekolah tidak boleh kosong!', 'error'); return; }
-  if (!ta) { toast('Tahun ajaran tidak boleh kosong!', 'error'); return; }
-  if (tempClasses.length === 0) { toast('Minimal 1 kelas harus ada!', 'error'); return; }
-  if (tempSubjects.length === 0) { toast('Minimal 1 mata pelajaran harus ada!', 'error'); return; }
-  const err = validateSchedule();
-  if (err) { toast('⚠️ ' + err, 'error'); return; }
 
   state.schoolName = name;
-  state.schoolAddress = addr;
-  state.academicYear = ta;
-  state.teacherName = teacher;
-  state.nip = nip;
-  state.gscriptUrl = gscriptUrl;
+  state.schoolAddress = document.getElementById('setSchoolAddress').value.trim();
+  state.academicYear = document.getElementById('setAcademicYear').value.trim();
+  state.teacherName = document.getElementById('setTeacherName').value.trim();
+  state.nip = document.getElementById('setNip').value.trim();
+  state.maxMeetings = Math.max(1, Math.min(200, maxM));
+  state.gscriptUrl = document.getElementById('setGScriptUrl').value.trim();
+  state.printSettings.paperSize = document.getElementById('setPaperSize').value;
+  state.printSettings.orientation = document.querySelector('input[name="setOrientation"]:checked').value;
+
   state.classes = tempClasses;
-  state.subjects = [...tempSubjects];
-  state.printSettings = { paperSize, orientation };
-  state.schedule = {
-    senin: tempSchedule.senin.slice().sort((a,b) => a.hour - b.hour),
-    selasa_kamis: tempSchedule.selasa_kamis.slice().sort((a,b) => a.hour - b.hour),
-    jumat: tempSchedule.jumat.slice().sort((a,b) => a.hour - b.hour)
-  };
+  state.subjects = tempSubjects;
+  state.schedule = tempSchedule;
+
+  // Sesuaikan kelas aktif
+  if (currentClass >= state.classes.length) currentClass = 0;
   state.classes.forEach(c => {
     if (!state.subjects.includes(c.subject)) c.subject = state.subjects[0];
   });
-  if (currentClass >= state.classes.length) currentClass = 0;
 
-  saveState(); render(); closeSettingsModal();
-  toast('✅ Semua pengaturan disimpan');
+  saveState(true);
+  closeSettingsModal();
+  render();
+  toast('✅ Pengaturan disimpan');
 }
 
-/* ===== FITUR 3: GOOGLE SHEETS SYNC ===== */
-async function syncToGoogleSheets() {
-  if (!state.gscriptUrl) {
-    showConfirm('☁️ Google Sheets Belum Dikonfigurasi',
-      'URL Google Apps Script Web App belum diisi.\n\nBuka Pengaturan (⚙️ Settings) sekarang untuk memasukkan URL Web App?',
-      () => { openSettingsModal(); }, false);
-    return;
-  }
+/* ===== BACKUP & RESTORE JSON (FITUR 1) ===== */
+function backupJSON() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+  const dl = document.createElement('a');
+  const dateStr = getDeviceDateISO();
+  dl.setAttribute("href", dataStr);
+  dl.setAttribute("download", `Backup_Absensi_${state.schoolName.replace(/\s+/g,'_')}_${dateStr}.json`);
+  dl.click();
+  toast('✅ File Backup JSON diunduh');
+}
 
-  const c = state.classes[currentClass];
-  if (!c.students || c.students.length === 0) {
-    toast('Tidak ada siswa di kelas ini untuk disinkronkan', 'error');
-    return;
-  }
+function triggerRestoreJSON() {
+  document.getElementById('jsonFileInput').click();
+}
 
-  toast('⏳ Mengirim data ke Google Sheets...', 'success');
-
-  const rows = c.students.map((st, idx) => {
-    const r = [idx + 1, st.nis || '', st.name];
-    let h = 0, s = 0, i = 0, a = 0;
-    for (let m = 1; m <= c.meetings; m++) {
-      const v = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
-      r.push(v);
-      if (v === 'H') h++; else if (v === 'S') s++; else if (v === 'I') i++; else a++;
+function handleJsonRestore(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      if (parsed && parsed.classes) {
+        state = migrateState(parsed);
+        currentClass = 0;
+        currentMeeting = 1;
+        saveState(false);
+        closeSettingsModal();
+        render();
+        toast('✅ Data berhasil dipulihkan dari file JSON!');
+      } else {
+        toast('Format file JSON tidak valid', 'error');
+      }
+    } catch(err) {
+      toast('Gagal memproses file: ' + err.message, 'error');
     }
-    const pct = c.meetings > 0 ? Math.round((h / c.meetings) * 100) + '%' : '100%';
-    const note = (c.notes && c.notes[st.id] && c.notes[st.id][currentMeeting]) || '';
-    r.push(h, s, i, a, pct, note);
-    return r;
-  });
-
-  const payload = {
-    schoolName: state.schoolName,
-    academicYear: state.academicYear,
-    teacherName: state.teacherName || '-',
-    className: c.name,
-    subject: c.subject,
-    meetings: c.meetings,
-    currentMeeting: currentMeeting,
-    rows: rows
   };
-
-  try {
-    // Mode no-cors agar lolos dari blokir preflight browser ke Google Apps Script
-    await fetch(state.gscriptUrl, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload)
-    });
-    toast(`✅ Sukses sync kelas "${c.name}" ke Google Sheets!`);
-  } catch(err) {
-    toast('Gagal sync: ' + err.message, 'error');
-  }
+  reader.readAsText(file);
+  e.target.value = '';
 }
 
-/* ===== DOWNLOAD HTML (SELF-CONTAINED) ===== */
-function downloadHTML() {
-  try {
-    const clone = document.documentElement.cloneNode(true);
-    const embEl = clone.querySelector('#embedded-data');
-    if (embEl) embEl.textContent = JSON.stringify(state);
-    clone.querySelectorAll('.modal-bg.show').forEach(m => m.classList.remove('show'));
-    clone.querySelectorAll('.toast.show').forEach(t => t.classList.remove('show'));
-    const htmlStr = '<!DOCTYPE html>\n' + clone.outerHTML;
-    const blob = new Blob([htmlStr], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const safeSchool = state.schoolName.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_').substring(0, 30);
-    const dateStr = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `Absensi_${safeSchool}_${dateStr}.html`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast('✅ HTML berhasil diunduh — siap dibagikan!');
-  } catch(err) {
-    toast('Gagal download: ' + err.message, 'error');
-  }
-}
-
-function clearEmbeddedData() {
-  showConfirm('🗑 Hapus Data Ter-Embed',
-    'Hapus data yang ter-embed di HTML ini?',
-    () => {
-      const el = document.getElementById('embedded-data');
-      if (el) el.textContent = '';
-      toast('✅ Data ter-embed dihapus');
-    }, false);
-}
-
-/* ===== RESET DATA ===== */
-function resetData() {
-  showConfirm('🧹 Reset Data Siswa, Absensi & Materi',
-    'Semua DATA SISWA, ABSENSI, MATERI akan DIHAPUS.\n\nIdentitas sekolah, guru, daftar kelas, mapel, jadwal, dan pengaturan cetak TETAP tersimpan.',
-    () => {
-      const savedClasses = JSON.parse(JSON.stringify(state.classes)).map(c => ({
-        id: c.id, name: c.name, subject: c.subject
-      }));
-      const fresh = defaultState();
-      fresh.schoolName = state.schoolName;
-      fresh.schoolAddress = state.schoolAddress;
-      fresh.academicYear = state.academicYear;
-      fresh.teacherName = state.teacherName;
-      fresh.nip = state.nip;
-      fresh.gscriptUrl = state.gscriptUrl;
-      fresh.subjects = [...state.subjects];
-      fresh.printSettings = { ...state.printSettings };
-      fresh.schedule = JSON.parse(JSON.stringify(state.schedule));
-      fresh.classes = savedClasses.map(c => ({
-        id: c.id, name: c.name, subject: c.subject,
-        students: [], attendance: {}, notes: {}, meetings: 0, meetingsData: {}
-      }));
-      state = fresh;
-      currentClass = 0; currentMeeting = 1;
-      saveState(); render();
-      toast('Data siswa & absensi dibersihkan.');
-    }, true
-  );
-}
-
-function resetTotal() {
-  showConfirm('🗑 Reset Total (Termasuk Daftar Kelas)',
-    'SEMUA data dihapus, termasuk daftar kelas kembali ke 15 kelas default.\n\nIdentitas sekolah, guru, daftar mapel, jadwal, dan pengaturan cetak TETAP tersimpan.',
-    () => {
-      const fresh = defaultState();
-      fresh.schoolName = state.schoolName;
-      fresh.schoolAddress = state.schoolAddress;
-      fresh.academicYear = state.academicYear;
-      fresh.teacherName = state.teacherName;
-      fresh.nip = state.nip;
-      fresh.gscriptUrl = state.gscriptUrl;
-      fresh.subjects = [...state.subjects];
-      fresh.printSettings = { ...state.printSettings };
-      fresh.schedule = JSON.parse(JSON.stringify(state.schedule));
-      state = fresh;
-      currentClass = 0; currentMeeting = 1;
-      saveState(); render();
-      toast('🗑 Reset total selesai');
-    }, true
-  );
-}
-
-/* ===== ROTASI STATUS & PERTEMUAN ===== */
-function cycleStatus(id) {
-  const c = state.classes[currentClass];
-  if (c.meetings === 0) return;
-  const cur = c.attendance[id][currentMeeting] || 'H';
-  c.attendance[id][currentMeeting] = STATUS_CYCLE[(STATUS_CYCLE.indexOf(cur)+1) % STATUS_CYCLE.length];
-  render();
-}
-
-function deleteStudent(id) {
-  showConfirm('Hapus Siswa', 'Yakin ingin menghapus siswa ini?', () => {
-    const c = state.classes[currentClass];
-    c.students = c.students.filter(s => s.id !== id);
-    delete c.attendance[id];
-    if (c.notes) delete c.notes[id];
-    render(); toast('Siswa dihapus');
-  }, false);
-}
-
-function addMeeting() {
-  const c = state.classes[currentClass];
-  if (c.meetings >= MAX_MEETINGS) { toast(`Maksimal ${MAX_MEETINGS} pertemuan!`, 'error'); return; }
-  c.meetings++;
-  currentMeeting = c.meetings;
-  const detectedHour = detectCurrentHour();
-  c.students.forEach(st => {
-    if (!c.attendance[st.id]) c.attendance[st.id] = {};
-    c.attendance[st.id][currentMeeting] = c.attendance[st.id][currentMeeting] || 'H';
-  });
-  const today = new Date();
-  c.meetingsData[currentMeeting] = { date: today.toISOString().slice(0,10), hour: detectedHour, material: '' };
-  render();
-  toast(`✅ Pertemuan ${currentMeeting} — ${DAY_NAMES[today.getDay()]}, Jam Ke-${detectedHour}`);
-}
-
-function nextMeeting() {
-  const c = state.classes[currentClass];
-  if (c.meetings === 0) { addMeeting(); return; }
-  if (currentMeeting < c.meetings) { currentMeeting++; render(); }
-}
-
-function prevMeeting() {
-  if (currentMeeting > 1) { currentMeeting--; render(); }
-}
-
-/* ===== CETAK REKAP (FITUR 1 & FITUR 2) ===== */
+/* ===== CETAK REKAP ===== */
 function getPrintCSS() {
   const ps = state.printSettings;
   const size = PAPER_SIZES[ps.paperSize] || PAPER_SIZES['A4'];
   const orient = ps.orientation;
   return `
-    @page { size: ${size.w}mm ${size.h}mm ${orient}; margin: ${orient === 'portrait' ? '12mm' : '10mm'}; }
-    body { font-family: Arial, sans-serif; padding: 5px; font-size: ${orient === 'portrait' ? '9px' : '10px'}; }
-    .print-page { page-break-after: always; }
-    .print-page:last-child { page-break-after: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #333; padding: ${orient === 'portrait' ? '3px 4px' : '4px 5px'}; }
+    @page { size: ${size.w}mm ${size.h}mm ${orient}; margin: 10mm; }
+    body { font-family: Arial, sans-serif; font-size: 10px; color: #000; padding: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border: 1px solid #333; padding: 4px; text-align: left; }
+    th { background: #e5e7eb; }
+    .text-center { text-align: center; }
   `;
 }
 
 function buildRekapHTML(c) {
-  const tgl = new Date().toLocaleDateString('id-ID', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const teacherName = state.teacherName || '(...........................................)';
-  const nipLine = state.nip ? `NIP. ${esc(state.nip)}` : '';
-  const orient = state.printSettings.orientation;
-  let html = `<div class="print-page">
-    <div style="text-align:center;margin-bottom:${orient === 'portrait' ? '10px' : '15px'};border-bottom:3px double #333;padding-bottom:8px;">
-      <h2 style="font-size:${orient === 'portrait' ? '14px' : '18px'};margin:0;">REKAP ABSENSI SISWA</h2>
-      <h3 style="font-size:${orient === 'portrait' ? '13px' : '16px'};margin:3px 0;">${esc(state.schoolName)}</h3>
-      ${state.schoolAddress ? `<p style="font-size:10px;color:#555;margin:2px 0;">${esc(state.schoolAddress)}</p>` : ''}
-      <p style="font-size:11px;margin:3px 0;"><b>Tahun Ajaran: ${esc(state.academicYear)}</b></p>
-      <p style="font-size:11px;margin:2px 0;">Kelas: <b>${esc(c.name)}</b> &nbsp;|&nbsp; Mata Pelajaran: <b>${esc(c.subject)}</b></p>
-      <p style="font-size:10px;color:#555;margin-top:3px;">Dicetak: ${tgl} | Pertemuan: ${c.meetings}</p>
-    </div>`;
-
-  if (c.students.length === 0) return html + '<p style="text-align:center;color:#888;">Belum ada data siswa.</p></div>';
-
-  html += `<h4 style="font-size:12px;margin:8px 0 4px;">A. TABEL ABSENSI (Pertemuan 1 s/d ${c.meetings})</h4>
-    <table style="font-size:${orient === 'portrait' ? '8px' : '10px'};"><thead><tr style="background:#2a5298;color:#fff;">
-    <th>No</th><th>NIS</th><th>Nama Siswa</th>`;
-  for (let m=1; m<=c.meetings; m++) html += `<th>P${m}</th>`;
-  html += `<th style="background:#065f46;">H</th><th style="background:#991b1b;">S</th>
-           <th style="background:#92400e;">I</th><th style="background:#374151;">A</th>
-           <th style="background:#1e40af;">% Hadir</th></tr></thead><tbody>`;
+  const dNow = getDeviceNow();
+  const tgl = `${dNow.getDate()} ${MONTH_NAMES[dNow.getMonth()]} ${dNow.getFullYear()}`;
+  let html = `<div style="page-break-after:always;">
+    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:10px;">
+      <h2 style="margin:0; font-size:16px;">REKAP KEHADIRAN SISWA</h2>
+      <h3 style="margin:2px 0; font-size:14px;">${esc(state.schoolName)}</h3>
+      <p style="margin:0; font-size:11px;">Tahun Ajaran: ${esc(state.academicYear)} | Kelas: <b>${esc(c.name)}</b> | Mapel: <b>${esc(c.subject)}</b></p>
+    </div>
+    <table><thead><tr>
+      <th style="width:30px">No</th><th style="width:100px">NIS</th><th>Nama Siswa</th>`;
+  for (let m=1; m<=c.meetings; m++) html += `<th class="text-center" style="width:25px">P${m}</th>`;
+  html += `<th class="text-center" style="width:30px">H</th><th class="text-center" style="width:30px">S</th><th class="text-center" style="width:30px">I</th><th class="text-center" style="width:30px">A</th><th class="text-center" style="width:45px">%</th></tr></thead><tbody>`;
 
   c.students.forEach((st, idx) => {
     let h=0,s=0,i=0,a=0;
-    html += `<tr><td style="text-align:center;">${idx+1}</td>
-      <td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td>`;
+    html += `<tr><td class="text-center">${idx+1}</td><td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td>`;
     for (let m=1; m<=c.meetings; m++) {
-      const v = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
-      if (v==='H') h++; else if (v==='S') s++; else if (v==='I') i++; else a++;
-      const bg = v==='H' ? '#d1fae5' : v==='S' ? '#fee2e2' : v==='I' ? '#fef3c7' : '#e5e7eb';
-      html += `<td style="text-align:center;background:${bg};">${v}</td>`;
+      const val = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
+      if (val === 'H') h++; else if (val === 'S') s++; else if (val === 'I') i++; else a++;
+      html += `<td class="text-center">${val}</td>`;
     }
-    const pct = c.meetings > 0 ? Math.round((h / c.meetings) * 100) : 100;
-    html += `<td style="text-align:center;font-weight:bold;">${h}</td>
-      <td style="text-align:center;font-weight:bold;">${s}</td>
-      <td style="text-align:center;font-weight:bold;">${i}</td>
-      <td style="text-align:center;font-weight:bold;">${a}</td>
-      <td style="text-align:center;font-weight:bold;">${pct}%</td></tr>`;
+    const pct = c.meetings > 0 ? Math.round((h/c.meetings)*100) : 100;
+    html += `<td class="text-center">${h}</td><td class="text-center">${s}</td><td class="text-center">${i}</td><td class="text-center">${a}</td><td class="text-center"><b>${pct}%</b></td></tr>`;
   });
-  html += `</tbody></table><p style="font-size:9px;color:#555;margin-top:4px;">H=Hadir, S=Sakit, I=Izin, A=Alfa</p>`;
 
-  // Rekap Catatan Siswa (Jika ada catatan)
-  let hasNotes = false;
-  let notesHtml = `<h4 style="font-size:12px;margin:12px 0 4px;">B. CATATAN KHUSUS SISWA</h4>
-    <table style="font-size:${orient === 'portrait' ? '8px' : '10px'};"><thead><tr style="background:#2a5298;color:#fff;">
-    <th style="width:30px;">No</th><th style="width:90px;">NIS</th><th>Nama Siswa</th><th>Pertemuan</th><th>Keterangan</th></tr></thead><tbody>`;
-  let nIdx = 1;
-  c.students.forEach(st => {
-    if (c.notes && c.notes[st.id]) {
-      for (let m = 1; m <= c.meetings; m++) {
-        const n = c.notes[st.id][m];
-        if (n) {
-          hasNotes = true;
-          notesHtml += `<tr><td style="text-align:center;">${nIdx++}</td><td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td><td style="text-align:center;">P${m}</td><td>${esc(n)}</td></tr>`;
-        }
-      }
-    }
-  });
-  notesHtml += `</tbody></table>`;
-  if (hasNotes) html += notesHtml;
-
-  // Jurnal Materi & Jadwal
-  html += `<h4 style="font-size:12px;margin:${orient === 'portrait' ? '10px' : '15px'} 0 4px;page-break-before:always;">${hasNotes ? 'C' : 'B'}. REKAP JURNAL & MATERI</h4>
-    <table style="font-size:${orient === 'portrait' ? '9px' : '11px'};"><thead><tr style="background:#2a5298;color:#fff;">
-    <th>Pertemuan</th><th>Hari / Tanggal</th><th>Jam Ke-</th><th>Waktu</th><th>Materi</th></tr></thead><tbody>`;
-  for (let m=1; m<=c.meetings; m++) {
-    const d = c.meetingsData[m] || {};
-    let hariTgl = '-';
-    if (d.date) {
-      const dt = new Date(d.date);
-      if (!isNaN(dt.getTime())) hariTgl = DAY_NAMES[dt.getDay()] + ', ' + dt.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-    }
-    const schedForM = getScheduleForDate(d.date);
-    const sc = schedForM.find(x => x.hour === d.hour);
-    const waktu = sc ? `${sc.start} - ${sc.end}` : '-';
-    html += `<tr><td style="text-align:center;">${m}</td>
-      <td>${hariTgl}</td>
-      <td style="text-align:center;">${d.hour||'-'}</td>
-      <td style="text-align:center;">${waktu}</td>
-      <td>${esc(d.material||'-')}</td></tr>`;
-  }
   html += `</tbody></table>
-    <div style="margin-top:${orient === 'portrait' ? '20px' : '30px'};text-align:right;">
-      <p>${tgl}</p>
-      <p style="font-weight:bold;">Guru Mata Pelajaran ${esc(c.subject)}</p>
-      <br><br><br>
-      <p style="font-weight:bold;border-top:1px solid #333;display:inline-block;padding-top:3px;">${esc(teacherName)}</p>
-      ${nipLine ? `<p style="font-size:10px;margin-top:2px;">${nipLine}</p>` : ''}
-    </div></div>`;
+    <div style="margin-top:20px; float:right; text-align:center; width:220px;">
+      <p>Gondang, ${tgl}</p>
+      <p style="margin-top:4px;">Guru Pengampu,</p>
+      <div style="height:55px;"></div>
+      <p style="font-weight:bold; text-decoration:underline;">${esc(state.teacherName || '...................................')}</p>
+      <p>NIP. ${esc(state.nip || '...................................')}</p>
+    </div>
+  </div>`;
   return html;
-}
-
-function openPrintWindow(title, content) {
-  const w = window.open('', '_blank');
-  if (!w) { toast('Izinkan popup browser untuk mencetak!', 'error'); return; }
-  const css = getPrintCSS();
-  w.document.write(`<!DOCTYPE html><html><head><title>${esc(title)}</title><style>${css}</style></head><body>${content}</body></html>`);
-  w.document.close();
-  setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
 function printRekap(idx) {
   const c = state.classes[idx];
-  if (!c.students.length && c.meetings === 0) { toast('Belum ada data untuk dicetak', 'error'); return; }
-  openPrintWindow(`Rekap ${c.name} - ${state.schoolName}`, buildRekapHTML(c));
+  if (!c || c.students.length === 0) { toast('Tidak ada siswa untuk dicetak', 'error'); return; }
+  const w = window.open('', '_blank');
+  w.document.write(`<html><head><title>Cetak Rekap</title><style>${getPrintCSS()}</style></head><body>${buildRekapHTML(c)}</body></html>`);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
 function printAllRekap() {
   const list = state.classes.filter(c => c.students.length > 0);
-  if (!list.length) { toast('Belum ada kelas berisi siswa', 'error'); return; }
-  openPrintWindow(`Rekap Semua Kelas - ${state.schoolName}`, list.map(buildRekapHTML).join(''));
+  if (list.length === 0) { toast('Belum ada kelas yang berisi data siswa', 'error'); return; }
+  const w = window.open('', '_blank');
+  let content = list.map(c => buildRekapHTML(c)).join('');
+  w.document.write(`<html><head><title>Cetak Semua</title><style>${getPrintCSS()}</style></head><body>${content}</body></html>`);
+  w.document.close();
+  setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
-/* ===== EXCEL IMPORT & EXPORT ===== */
+/* ===== IMPORT & EXPORT EXCEL ===== */
 function importExcel() { document.getElementById('fileInput').click(); }
 
 function handleFile(e) {
@@ -1681,44 +1382,27 @@ function handleFile(e) {
     try {
       const wb = XLSX.read(new Uint8Array(ev.target.result), { type:'array' });
       const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval:'' });
-      if (!rows.length) { toast('File kosong!', 'error'); return; }
+      if (!rows.length) { toast('File Excel kosong!', 'error'); return; }
       const keys = Object.keys(rows[0]);
       const nameKey = keys.find(k => /nama|name/i.test(k)) || keys[0];
-      const nisKey = keys.find(k => /^nis$|^nipd|^no/i.test(k)) || keys[1];
-      const classKey = keys.find(k => /kelas|class/i.test(k));
-      const grouped = {};
-      rows.forEach(r => {
-        let idx = currentClass;
-        if (classKey) {
-          const val = String(r[classKey]).trim();
-          const byName = state.classes.findIndex(c => c.name.toLowerCase() === val.toLowerCase());
-          if (byName >= 0) idx = byName;
-          else {
-            const num = parseInt(val.replace(/[^0-9]/g,''));
-            if (num >= 1 && num <= state.classes.length) idx = num-1;
-          }
-        }
-        const nama = String(r[nameKey]).trim();
-        if (!nama) return;
-        if (!grouped[idx]) grouped[idx] = [];
-        grouped[idx].push({ name: nama, nis: nisKey ? String(r[nisKey]).trim() : '' });
-      });
+      const nisKey = keys.find(k => /^nis$|^no/i.test(k)) || keys[1];
+
+      const c = state.classes[currentClass];
       let count = 0;
-      Object.keys(grouped).forEach(k => {
-        const c = state.classes[k];
-        grouped[k].forEach(s => {
-          const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
-          c.students.push({ id, name:s.name, nis:s.nis });
+      rows.forEach(r => {
+        const name = String(r[nameKey]).trim();
+        if (name) {
+          const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+          c.students.push({ id, name, nis: String(r[nisKey]||'').trim() });
           c.attendance[id] = {};
-          if (!c.notes) c.notes = {};
-          c.notes[id] = {};
           for (let m=1; m<=c.meetings; m++) c.attendance[id][m] = 'H';
           count++;
-        });
+        }
       });
+      saveState(true);
       render();
-      toast(`✅ ${count} siswa berhasil diimpor`);
-    } catch(err) { toast('Gagal: ' + err.message, 'error'); }
+      toast(`✅ Berhasil mengimpor ${count} siswa`);
+    } catch(err) { toast('Gagal membaca Excel: ' + err.message, 'error'); }
   };
   reader.readAsArrayBuffer(file);
   e.target.value = '';
@@ -1726,115 +1410,103 @@ function handleFile(e) {
 
 function exportExcel() {
   const wb = XLSX.utils.book_new();
-  const infoRows = [
-    { 'Item': 'Nama Sekolah', 'Value': state.schoolName },
-    { 'Item': 'Alamat', 'Value': state.schoolAddress || '-' },
-    { 'Item': 'Tahun Ajaran', 'Value': state.academicYear },
-    { 'Item': 'Nama Guru', 'Value': state.teacherName || '-' },
-    { 'Item': 'NIP', 'Value': state.nip || '-' },
-    { 'Item': 'Daftar Mata Pelajaran', 'Value': state.subjects.join(', ') },
-    { 'Item': 'Jumlah Kelas', 'Value': state.classes.length },
-    { 'Item': 'Tanggal Export', 'Value': new Date().toLocaleString('id-ID') },
-    { 'Item': 'Total Siswa', 'Value': state.classes.reduce((a,c) => a + c.students.length, 0) }
-  ];
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(infoRows), 'Info Sekolah');
-  let any = false;
-
   state.classes.forEach(c => {
     if (!c.students.length) return;
-    any = true;
-    const rows = c.students.map((st,idx) => {
-      const row = { 'No':idx+1, 'NIS':st.nis, 'Nama':st.name };
+    const rows = c.students.map((st, idx) => {
+      const row = { 'No': idx + 1, 'NIS': st.nis, 'Nama': st.name };
       let h=0,s=0,i=0,a=0;
       for (let m=1; m<=c.meetings; m++) {
-        const v = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
-        row['P'+m] = v;
-        if (v==='H') h++; else if (v==='S') s++; else if (v==='I') i++; else a++;
+        const val = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
+        row['P'+m] = val;
+        if (val === 'H') h++; else if (val === 'S') s++; else if (val === 'I') i++; else a++;
       }
-      row.H = h; row.S = s; row.I = i; row.A = a;
-      row['% Hadir'] = c.meetings > 0 ? (Math.round((h / c.meetings) * 100) + '%') : '100%';
+      row['Hadir'] = h; row['Sakit'] = s; row['Izin'] = i; row['Alfa'] = a;
+      row['% Hadir'] = c.meetings > 0 ? (Math.round((h/c.meetings)*100) + '%') : '100%';
       return row;
     });
-
-    const safeName = c.name.replace(/[\\\/\?\*\[\]:]/g,'').substring(0,31);
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), safeName);
-
-    // Sheet Materi
-    if (c.meetings > 0) {
-      const materi = [];
-      for (let m=1; m<=c.meetings; m++) {
-        const d = c.meetingsData[m] || {};
-        const schedForM = getScheduleForDate(d.date);
-        const sc = schedForM.find(x => x.hour === d.hour);
-        let hariTgl = '-';
-        if (d.date) {
-          const dt = new Date(d.date);
-          if (!isNaN(dt.getTime())) hariTgl = DAY_NAMES[dt.getDay()] + ' ' + dt.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
-        }
-        materi.push({
-          'Pertemuan':m, 'Hari / Tanggal':hariTgl, 'Mata Pelajaran': c.subject,
-          'Jam Ke-':d.hour||'-', 'Waktu': sc ? `${sc.start} - ${sc.end}` : '-',
-          'Materi':d.material||'-'
-        });
-      }
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(materi), (safeName.substring(0,18)+'-Materi'));
-    }
-
-    // Sheet Catatan Khusus
-    const catRows = [];
-    c.students.forEach(st => {
-      if (c.notes && c.notes[st.id]) {
-        for (let m = 1; m <= c.meetings; m++) {
-          if (c.notes[st.id][m]) {
-            catRows.push({
-              'NIS': st.nis || '-',
-              'Nama Siswa': st.name,
-              'Pertemuan': 'P' + m,
-              'Catatan': c.notes[st.id][m]
-            });
-          }
-        }
-      }
-    });
-    if (catRows.length > 0) {
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(catRows), (safeName.substring(0,18)+'-Catatan'));
-    }
+    const sheetName = c.name.replace(/[:\\/?*\[\]]/g, '').substring(0, 30);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), sheetName);
   });
-
-  if (!any) { toast('Belum ada data siswa untuk diexport', 'error'); return; }
-  XLSX.writeFile(wb, `Absensi_${state.schoolName.replace(/\s+/g,'_')}_TA${state.academicYear.replace(/\//g,'-')}_${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast('✅ Excel berhasil diunduh');
+  XLSX.writeFile(wb, `Rekap_Absensi_${state.schoolName}_${getDeviceDateISO()}.xlsx`);
 }
 
 function downloadTemplate() {
-  const rows = [];
-  for (let i=1; i<=30; i++) rows.push({ 'Kelas':state.classes[currentClass].name, 'NIS':'2024'+String(i).padStart(3,'0'), 'Nama':'Siswa '+i });
+  const sample = [];
+  for (let i=1; i<=10; i++) {
+    sample.push({ 'NIS': '2026' + String(i).padStart(3, '0'), 'Nama': 'Contoh Siswa ' + i });
+  }
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Template');
-  XLSX.writeFile(wb, 'Template_Absensi.xlsx');
-  toast('✅ Template Excel diunduh');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(sample), 'Template');
+  XLSX.writeFile(wb, 'Template_Siswa.xlsx');
 }
 
-/* ===== UTIL / MODAL ===== */
-function toast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = type==='error' ? '#ef4444' : '#10b981';
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+/* ===== DOWNLOAD SELF-CONTAINED HTML ===== */
+function downloadHTML() {
+  const clone = document.documentElement.cloneNode(true);
+  const embEl = clone.querySelector('#embedded-data');
+  if (embEl) embEl.textContent = JSON.stringify(state);
+  clone.querySelectorAll('.modal-bg.show').forEach(m => m.classList.remove('show'));
+  const blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Absensi_${state.schoolName.replace(/\s+/g,'_')}_${getDeviceDateISO()}.html`;
+  a.click();
+  toast('✅ File HTML aplikasi tersimpan');
 }
 
-function showConfirm(title, msg, onOk, keepIdentity=false) {
+/* ===== RESET DATA ===== */
+function resetData() {
+  showConfirm('🧹 Reset Siswa & Pertemuan',
+    'Semua data siswa dan riwayat absensi pada semua kelas akan dihapus.\nPengaturan identitas sekolah, jadwal, dan mapel tetap tersimpan.',
+    () => {
+      state.classes.forEach(c => {
+        c.students = [];
+        c.attendance = {};
+        c.notes = {};
+        c.meetings = 0;
+        c.meetingsData = {};
+      });
+      currentMeeting = 1;
+      saveState(true);
+      render();
+      toast('Data absensi & siswa telah dikosongkan.');
+    });
+}
+
+function resetTotal() {
+  showConfirm('🗑 Reset Total Aplikasi',
+    'PERINGATAN: Seluruh database, termasuk daftar kelas, akan dikembalikan ke setelan awal pabrik.',
+    () => {
+      localStorage.removeItem(STORAGE_KEY);
+      state = defaultState();
+      currentClass = 0;
+      currentMeeting = 1;
+      saveState(false);
+      render();
+      toast('Aplikasi direset total ke setelan awal.');
+    });
+}
+
+/* ===== MODAL KONFIRMASI & TOAST ===== */
+function showConfirm(title, msg, onOk) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalMsg').textContent = msg;
-  const note = document.getElementById('modalNote');
-  note.style.display = keepIdentity ? 'block' : 'none';
-  note.textContent = keepIdentity ? '✅ Identitas, mapel, jadwal, dan pengaturan cetak TIDAK dihapus.' : '';
+  document.getElementById('modalOk').onclick = () => {
+    closeModal();
+    onOk();
+  };
   document.getElementById('modal').classList.add('show');
-  document.getElementById('modalOk').onclick = () => { closeModal(); onOk(); };
 }
 
 function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+function toast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#dc2626' : '#059669';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -1844,7 +1516,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ===== INISIALISASI ===== */
+/* ===== BOOTSTRAP INISIALISASI ===== */
 startClock();
 render();
 </script>
