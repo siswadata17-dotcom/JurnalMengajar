@@ -7,7 +7,7 @@
 <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, sans-serif; background: #f4f6f9; color: #333; font-size: 14px; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f4f6f9; color: #333; font-size: 14px; }
   .container { max-width: 1200px; margin: 0 auto; background: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
   header { background: #1e3a8a; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
   .school-info h1 { font-size: 18px; font-weight: 700; letter-spacing: .5px; }
@@ -15,7 +15,7 @@
   .school-info .teacher { font-size: 12px; margin-top: 4px; background: rgba(255,255,255,.15); display: inline-block; padding: 3px 10px; border-radius: 4px; }
   .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .school-badge { background: rgba(255,255,255,.15); padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-  .net-badge { font-size: 11px; padding: 4px 8px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+  .net-badge { font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
   .net-online { background: #10b981; color: #fff; }
   .net-offline { background: #ef4444; color: #fff; }
   .net-pending { background: #f59e0b; color: #fff; animation: pulse 1.5s infinite; }
@@ -49,7 +49,6 @@
   .form-row > div { flex: 1; min-width: 150px; }
   .form-row label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 3px; color: #555; }
   .form-row input, .form-row select, .form-row textarea { width: 100%; }
-  .form-row textarea { min-height: 45px; resize: vertical; }
 
   .clock-info { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 8px 12px; font-size: 12px; color: #1e40af; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .clock-info b { font-size: 13px; }
@@ -82,7 +81,6 @@
   .modal-bg.show { display: flex; }
   .modal { background: #fff; padding: 22px; border-radius: 8px; max-width: 640px; width: 95%; max-height: 92vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
   .modal h3 { margin-bottom: 12px; font-size: 16px; color: #1e3a8a; }
-  .modal p { margin-bottom: 12px; color: #555; font-size: 13px; line-height: 1.5; }
   .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; border-top: 1px solid #e5e7eb; padding-top: 12px; }
   .form-group { margin-bottom: 12px; }
   .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px; color: #374151; }
@@ -97,7 +95,6 @@
   .class-item .class-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
   .class-item .class-name { font-size: 13px; font-weight: 600; color: #1f2937; }
   .class-item .class-meta { font-size: 11px; color: #6b7280; }
-  .class-actions, .subj-actions { display: flex; gap: 4px; }
   .class-add, .subject-add { display: flex; gap: 6px; margin-top: 6px; }
   .class-add input, .subject-add input { flex: 1; }
 
@@ -106,14 +103,6 @@
   .radio-group label { display: flex; align-items: center; gap: 5px; font-weight: normal; cursor: pointer; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; }
   .radio-group label:has(input:checked) { background: #dbeafe; border-color: #2563eb; color: #1e40af; font-weight: bold; }
 
-  .day-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; margin-bottom: 12px; }
-  .schedule-edit { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .schedule-edit th { background: #1e3a8a; color: #fff; padding: 4px; font-size: 11px; text-align: center; }
-  .schedule-edit td { border: 1px solid #e2e8f0; padding: 3px; text-align: center; background: #fff; }
-  .schedule-edit input { padding: 3px 5px; font-size: 12px; text-align: center; width: 100%; }
-  .schedule-actions { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
-
-  .code-box { background: #0f172a; color: #f8fafc; padding: 10px; border-radius: 4px; font-family: monospace; font-size: 11px; max-height: 120px; overflow-y: auto; white-space: pre; margin-top: 6px; }
   .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: #fff; padding: 10px 18px; border-radius: 6px; font-size: 13px; z-index: 300; opacity: 0; transform: translateY(10px); transition: opacity .3s, transform .3s; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; }
   .toast.show { opacity: 1; transform: translateY(0); }
 
@@ -158,7 +147,7 @@
     <div class="separator"></div>
     <button class="btn-blue" onclick="importExcel()" title="Bisa impor per-kelas atau langsung seluruh kelas">📥 Import</button>
     <button class="btn-green" onclick="exportExcel()">📤 Export</button>
-    <button onclick="downloadTemplate()" title="Unduh template Excel untuk semua kelas">📋 Template</button>
+    <button onclick="downloadTemplate()" title="Unduh template Excel">📋 Template</button>
     <div class="separator"></div>
     <button class="btn-teal" id="btnSync" onclick="manualSync()">☁️ Sync Sheets</button>
     <div class="separator"></div>
@@ -189,7 +178,7 @@
     <span class="status-S">S Sakit</span>
     <span class="status-I">I Izin</span>
     <span class="status-A">A Alfa</span>
-    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa • Impor multi-kelas otomatis</span>
+    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan • Auto-sync Google Sheets & IndexedDB aktif</span>
   </div>
 </div>
 
@@ -222,58 +211,34 @@
       <input type="text" id="setNip" maxlength="30">
     </div>
 
-    <div class="section-title">📅 Pengaturan Jumlah Pertemuan</div>
+    <div class="section-title">📅 Batas Pertemuan</div>
     <div class="form-group">
       <label>Batas Maksimal Pertemuan (Limit)</label>
       <input type="number" id="setMaxMeetings" min="1" max="200" value="50">
-      <div class="form-hint">Atur berapa banyak batas maksimal pertemuan per kelas (Default: 50).</div>
     </div>
 
-    <div class="section-title">☁️ Integrasi Google Sheets (Auto-Sync & Offline Queue)</div>
+    <div class="section-title">☁️ Integrasi Google Sheets (Web App URL)</div>
     <div class="form-group">
       <label>Google Apps Script Web App URL</label>
-      <input type="url" id="setGScriptUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+      <div style="display: flex; gap: 6px;">
+        <input type="url" id="setGScriptUrl" placeholder="https://script.google.com/macros/s/.../exec">
+        <button type="button" class="btn-teal" style="white-space: nowrap;" onclick="testScriptConnection()">🔍 Tes Koneksi</button>
+      </div>
+      <p class="form-hint">Pastikan Web App di-deploy dengan opsi: "Who has access: Anyone".</p>
     </div>
-    <p class="form-hint">Perubahan saat OFFLINE akan otomatis dikirim ke Google Spreadsheet saat perangkat kembali ONLINE.</p>
-    <details style="font-size:12px; color:#4b5563; margin-bottom:12px;">
-      <summary style="cursor:pointer; font-weight:bold; color:#1e3a8a;">📋 Lihat Contoh Kode Apps Script</summary>
-      <div class="code-box">function doPost(e) {
-  try {
-    var data = JSON.parse(e.postData.contents);
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var sheet = ss.getSheetByName(data.className) || ss.insertSheet(data.className);
-    sheet.clear();
-    sheet.appendRow(["REKAP ABSENSI: " + data.schoolName + " - " + data.className + " (" + data.subject + ")"]);
-    sheet.appendRow(["Tahun Ajaran: " + data.academicYear, "Guru: " + data.teacherName, "Update: " + new Date().toLocaleString("id-ID")]);
-    sheet.appendRow([]);
-    var headers = ["No", "NIS", "Nama Siswa"];
-    for(var m=1; m<=data.meetings; m++) headers.push("P" + m);
-    headers.push("H", "S", "I", "A", "% Hadir", "Catatan");
-    sheet.appendRow(headers);
-    data.rows.forEach(function(r) { sheet.appendRow(r); });
-    return ContentService.createTextOutput(JSON.stringify({status:"ok"})).setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({status:"error", message: err.toString()})).setMimeType(ContentService.MimeType.JSON);
-  }
-}</div>
-    </details>
 
     <div class="section-title">📋 Daftar Kelas (CRUD)</div>
     <div id="classListContainer"></div>
     <div class="class-add">
-      <input type="text" id="newClassInput" placeholder="Nama kelas baru (contoh: X RPL 1)..." maxlength="30">
-      <button class="btn-green" onclick="addClass()">➕ Tambah Kelas</button>
-    </div>
-    <div style="display:flex; gap:6px; margin-top:8px;">
-      <button class="btn-orange" onclick="resetClassesToDefault()">🔄 Reset Kelas Default</button>
-      <button class="btn-gray" onclick="sortClasses()">↕️ Urutkan Nama</button>
+      <input type="text" id="newClassInput" placeholder="Nama kelas baru..." maxlength="30">
+      <button class="btn-green" onclick="addClass()">➕ Tambah</button>
     </div>
 
     <div class="section-title">📚 Daftar Mata Pelajaran</div>
     <div id="subjectListContainer"></div>
     <div class="subject-add">
       <input type="text" id="newSubjectInput" placeholder="Mata pelajaran baru..." maxlength="40">
-      <button class="btn-green" onclick="addSubject()">➕ Tambah Mapel</button>
+      <button class="btn-green" onclick="addSubject()">➕ Tambah</button>
     </div>
 
     <div class="section-title">🖨️ Pengaturan Cetak</div>
@@ -296,13 +261,10 @@
       </div>
     </div>
 
-    <div class="section-title">🕐 Jadwal Pelajaran per Hari</div>
-    <div id="scheduleEditContainer"></div>
-
     <div class="section-title">💾 Backup & Restore Database (.JSON)</div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">
-      <button class="btn-blue" onclick="backupJSON()">💾 Download Backup (.json)</button>
-      <button class="btn-orange" onclick="triggerRestoreJSON()">📂 Restore Backup (.json)</button>
+      <button class="btn-blue" onclick="backupJSON()">💾 Download JSON</button>
+      <button class="btn-orange" onclick="triggerRestoreJSON()">📂 Restore JSON</button>
     </div>
 
     <div class="modal-actions">
@@ -319,7 +281,7 @@
     <p id="noteModalSubtitle" style="font-size:12px; color:#666; margin-bottom:8px;"></p>
     <div class="form-group">
       <label>Keterangan Tambahan / Dispensasi / Surat:</label>
-      <textarea id="noteModalInput" placeholder="Contoh: Sakit tipes (surat dokter), LKS IT Software..." rows="3"></textarea>
+      <textarea id="noteModalInput" placeholder="Contoh: Sakit tipes (surat dokter terlampir)..." rows="3"></textarea>
     </div>
     <div class="modal-actions">
       <button class="btn-outline" onclick="deleteStudentNote()">Hapus</button>
@@ -329,7 +291,7 @@
   </div>
 </div>
 
-<!-- Modal Konfirmasi Universal -->
+<!-- Modal Universal -->
 <div class="modal-bg" id="modal">
   <div class="modal" style="max-width: 460px;">
     <h3 id="modalTitle">Konfirmasi</h3>
@@ -344,46 +306,74 @@
 <div class="toast" id="toast"></div>
 
 <script>
-/* ===== KONFIGURASI DEFAULT ===== */
-const DEFAULT_CLASS_COUNT = 15;
+/* ========================================================
+   POIN 2: DUAL-LAYER STORAGE ENGINE (INDEXEDDB + LOCALSTORAGE)
+   Menjamin data puluhan kelas & ribuan siswa tidak terpotong 
+   karena limit 5MB LocalStorage browser.
+   ======================================================== */
+const IDB_NAME = 'AbsensiSiswaDB';
+const IDB_STORE = 'app_state';
 const STORAGE_KEY = 'absensiSiswa_v16';
 const STATUS_CYCLE = ['H', 'S', 'I', 'A'];
+const DEFAULT_CLASS_COUNT = 15;
 const DEFAULT_SUBJECTS = ['Informatika', 'PAI', 'PKK'];
 const PAPER_SIZES = {
-  'A4': { w: 210, h: 297, label: 'A4' },
-  'F4': { w: 215, h: 330, label: 'F4/Folio' },
-  'Letter': { w: 216, h: 279, label: 'Letter' },
-  'Legal': { w: 216, h: 356, label: 'Legal US' }
+  'A4': { w: 210, h: 297 },
+  'F4': { w: 215, h: 330 },
+  'Letter': { w: 216, h: 279 },
+  'Legal': { w: 216, h: 356 }
 };
 
-const DEFAULT_SCHEDULE_SENIN = [
-  { hour: 1, start: '07:00', end: '07:45' }, { hour: 2, start: '07:45', end: '08:30' },
-  { hour: 3, start: '08:30', end: '09:15' }, { hour: 4, start: '09:15', end: '10:00' },
-  { hour: 5, start: '10:00', end: '10:45' }, { hour: 6, start: '10:45', end: '11:30' },
-  { hour: 7, start: '11:30', end: '12:15' }, { hour: 8, start: '12:15', end: '13:00' },
-  { hour: 9, start: '13:00', end: '13:45' }, { hour: 10, start: '13:45', end: '14:30' },
-  { hour: 11, start: '14:30', end: '15:15' }
-];
-const DEFAULT_SCHEDULE_SELASA_KAMIS = [
-  { hour: 1, start: '07:00', end: '07:45' }, { hour: 2, start: '07:45', end: '08:30' },
-  { hour: 3, start: '08:30', end: '09:30' }, { hour: 4, start: '09:30', end: '10:15' },
-  { hour: 5, start: '10:15', end: '11:00' }, { hour: 6, start: '11:00', end: '12:10' },
-  { hour: 7, start: '12:10', end: '12:50' }, { hour: 8, start: '12:50', end: '13:30' },
-  { hour: 9, start: '13:30', end: '14:10' }, { hour: 10, start: '14:10', end: '14:50' },
-  { hour: 11, start: '14:50', end: '15:30' }, { hour: 12, start: '15:30', end: '16:10' },
-  { hour: 13, start: '16:10', end: '17:00' }
-];
-const DEFAULT_SCHEDULE_JUMAT = [
-  { hour: 1, start: '07:00', end: '07:40' }, { hour: 2, start: '07:40', end: '08:20' },
-  { hour: 3, start: '08:20', end: '09:00' }, { hour: 4, start: '09:00', end: '09:40' },
-  { hour: 5, start: '09:40', end: '10:20' }, { hour: 6, start: '10:20', end: '11:00' },
-  { hour: 7, start: '11:00', end: '11:40' }, { hour: 8, start: '11:40', end: '12:20' },
-  { hour: 9, start: '12:20', end: '13:00' }, { hour: 10, start: '13:00', end: '13:40' },
-  { hour: 11, start: '13:40', end: '14:20' }
-];
+let dbInstance = null;
 
-/* ===== STATE MANAGEMENT ===== */
-let state = loadState();
+function openDB() {
+  return new Promise((resolve) => {
+    if (dbInstance) return resolve(dbInstance);
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE);
+      }
+    };
+    req.onsuccess = e => {
+      dbInstance = e.target.result;
+      resolve(dbInstance);
+    };
+    req.onerror = () => resolve(null); // Fallback ke LocalStorage jika gagal
+  });
+}
+
+async function idbSet(key, val) {
+  const db = await openDB();
+  if (!db) return;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(val, key);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    } catch (e) { resolve(false); }
+  });
+}
+
+async function idbGet(key) {
+  const db = await openDB();
+  if (!db) return null;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => resolve(null);
+    } catch (e) { resolve(null); }
+  });
+}
+
+/* ========================================================
+   STATE MANAGEMENT & INISIALISASI
+   ======================================================== */
+let state = defaultState();
 let currentClass = 0;
 let currentMeeting = 1;
 let currentSearchQuery = '';
@@ -395,7 +385,6 @@ let isSyncing = false;
 
 let tempClasses = [];
 let tempSubjects = [];
-let tempSchedule = { senin: [], selasa_kamis: [], jumat: [] };
 
 function defaultState() {
   const classes = [];
@@ -410,7 +399,7 @@ function defaultState() {
   }
   return {
     schoolName: 'SMKN 1 GONDANG',
-    schoolAddress: '',
+    schoolAddress: 'Gondang, Kec. Gondang, Kab. Nganjuk',
     academicYear: '2026/2027',
     teacherName: 'Suhardi, S. Pd.',
     nip: '198908172022211016',
@@ -419,30 +408,8 @@ function defaultState() {
     hasPendingSync: false,
     subjects: [...DEFAULT_SUBJECTS],
     printSettings: { paperSize: 'A4', orientation: 'portrait' },
-    schedule: {
-      senin: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SENIN)),
-      selasa_kamis: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SELASA_KAMIS)),
-      jumat: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_JUMAT))
-    },
     classes
   };
-}
-
-function loadState() {
-  try {
-    const el = document.getElementById('embedded-data');
-    if (el && el.textContent.trim()) {
-      const parsed = JSON.parse(el.textContent.trim());
-      if (parsed && parsed.classes) return migrateState(parsed);
-    }
-  } catch(e) {}
-
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('absensiSiswa_v15');
-    if (raw) return migrateState(JSON.parse(raw));
-  } catch(e) {}
-
-  return defaultState();
 }
 
 function migrateState(s) {
@@ -451,7 +418,7 @@ function migrateState(s) {
   s.schoolAddress = s.schoolAddress || '';
   s.academicYear = s.academicYear || '2026/2027';
   s.teacherName = s.teacherName !== undefined ? s.teacherName : 'Suhardi, S. Pd.';
-  s.nip = s.nip !== undefined ? s.nip : '198908172022211016';
+  s.nip = s.nip !== undefined ? s.nip : '';
   s.maxMeetings = parseInt(s.maxMeetings) || 50;
   s.gscriptUrl = s.gscriptUrl || '';
   s.hasPendingSync = !!s.hasPendingSync;
@@ -459,33 +426,67 @@ function migrateState(s) {
   if (!Array.isArray(s.subjects) || s.subjects.length === 0) s.subjects = [...DEFAULT_SUBJECTS];
   if (!s.printSettings) s.printSettings = { paperSize: 'A4', orientation: 'portrait' };
 
-  if (!s.schedule || !s.schedule.senin) {
-    s.schedule = {
-      senin: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SENIN)),
-      selasa_kamis: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_SELASA_KAMIS)),
-      jumat: JSON.parse(JSON.stringify(DEFAULT_SCHEDULE_JUMAT))
-    };
-  }
-
   s.classes.forEach((c, idx) => {
-    if (!c.id) c.id = 'c_' + (idx+1) + '_' + Date.now();
+    if (!c.id) c.id = 'c_' + (idx + 1) + '_' + Date.now();
     if (!c.students) c.students = [];
     if (!c.attendance) c.attendance = {};
     if (!c.notes) c.notes = {};
     if (!c.meetingsData) c.meetingsData = {};
     c.meetings = Math.min(s.maxMeetings, Number(c.meetings) || 0);
     if (!c.subject || !s.subjects.includes(c.subject)) c.subject = s.subjects[0];
-    if (!c.name) c.name = `Kelas ${idx+1}`;
+    if (!c.name) c.name = `Kelas ${idx + 1}`;
   });
 
   return s;
 }
 
+async function initAppState() {
+  // 1. Cek Data Embedded HTML
+  try {
+    const el = document.getElementById('embedded-data');
+    if (el && el.textContent.trim()) {
+      const parsed = JSON.parse(el.textContent.trim());
+      if (parsed && parsed.classes) {
+        state = migrateState(parsed);
+        render();
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // 2. Cek IndexedDB
+  try {
+    const fromIdb = await idbGet('current_state');
+    if (fromIdb && fromIdb.classes) {
+      state = migrateState(fromIdb);
+      render();
+      return;
+    }
+  } catch(e) {}
+
+  // 3. Fallback LocalStorage
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('absensiSiswa_v15');
+    if (raw) {
+      state = migrateState(JSON.parse(raw));
+      render();
+      return;
+    }
+  } catch(e) {}
+
+  state = defaultState();
+  render();
+}
+
 function saveState(triggerAutoSync = true) {
+  // Simpan ke IndexedDB (Kapasitas Besar)
+  idbSet('current_state', state);
+
+  // Fallback ke LocalStorage
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch(e) {
-    toast('Memori browser hampir penuh!', 'error');
+    console.warn('LocalStorage limit tercapai, data tetap aman di IndexedDB');
   }
 
   updateNetStatusUI();
@@ -500,7 +501,9 @@ function esc(s) {
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ===== TANGGAL & WAKTU REAL-TIME (CLIENT-SIDE) ===== */
+/* ========================================================
+   WAKTU DAN TANGGAL REAL-TIME
+   ======================================================== */
 const DAY_NAMES = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 const MONTH_SHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -509,10 +512,7 @@ function getDeviceNow() { return new Date(); }
 
 function getDeviceDateISO() {
   const now = getDeviceNow();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 }
 
 function formatMeetingDateDisplay(dateStr) {
@@ -527,32 +527,6 @@ function formatClock() {
   return [now.getHours(), now.getMinutes(), now.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
 }
 
-function timeToMinutes(timeStr) {
-  if (!timeStr) return 0;
-  const p = timeStr.split(':').map(Number);
-  return (p[0]||0) * 60 + (p[1]||0);
-}
-
-function getScheduleForDate(dateStr) {
-  const d = dateStr ? new Date(dateStr) : getDeviceNow();
-  const dow = isNaN(d.getTime()) ? getDeviceNow().getDay() : d.getDay();
-  if (dow === 1) return state.schedule.senin;
-  if (dow === 5) return state.schedule.jumat;
-  return state.schedule.selasa_kamis;
-}
-
-function detectCurrentHour(sched) {
-  const list = sched.slice().sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start));
-  if (list.length === 0) return 1;
-  const now = getDeviceNow();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  if (nowMins < timeToMinutes(list[0].start)) return list[0].hour;
-  for (let i = list.length - 1; i >= 0; i--) {
-    if (nowMins >= timeToMinutes(list[i].start)) return list[i].hour;
-  }
-  return list[0].hour;
-}
-
 function startClock() {
   if (clockInterval) clearInterval(clockInterval);
   const update = () => {
@@ -563,34 +537,36 @@ function startClock() {
   clockInterval = setInterval(update, 1000);
 }
 
-/* ===== SINKRONISASI & OFFLINE QUEUE ===== */
+/* ========================================================
+   POIN 1: SINKRONISASI GOOGLE APPS SCRIPT & STATUS VERIFIKASI
+   ======================================================== */
 function updateNetStatusUI() {
   const badge = document.getElementById('netBadge');
   if (!badge) return;
   if (!navigator.onLine) {
     badge.className = 'net-badge net-offline';
-    badge.innerHTML = '🔴 Offline (Disimpan Lokal)';
+    badge.innerHTML = '🔴 Offline (Lokal)';
   } else if (state.hasPendingSync) {
     badge.className = 'net-badge net-pending';
     badge.innerHTML = '🟡 Menunggu Sync...';
   } else {
     badge.className = 'net-badge net-online';
-    badge.innerHTML = '🟢 Online & Ter-sync';
+    badge.innerHTML = '🟢 Ter-sync Sheets';
   }
 }
 
 window.addEventListener('online', () => {
   updateNetStatusUI();
-  toast('🌐 Terhubung ke Internet. Menjalankan sinkronisasi...');
+  toast('🌐 Online: Menjalankan sinkronisasi tertunda...');
   if (state.hasPendingSync) queueAutoSync(300);
 });
 
 window.addEventListener('offline', () => {
   updateNetStatusUI();
-  toast('📴 Mode Offline. Data tetap aman di memori lokal.');
+  toast('📴 Offline: Data tersimpan aman di IndexedDB');
 });
 
-function queueAutoSync(delay = 1800) {
+function queueAutoSync(delay = 2000) {
   state.hasPendingSync = true;
   updateNetStatusUI();
   if (syncTimeout) clearTimeout(syncTimeout);
@@ -601,10 +577,31 @@ function queueAutoSync(delay = 1800) {
   }, delay);
 }
 
+// Uji koneksi Web App Apps Script secara langsung
+async function testScriptConnection() {
+  const url = document.getElementById('setGScriptUrl').value.trim();
+  if (!url) {
+    toast('Masukkan URL Web App terlebih dahulu!', 'error');
+    return;
+  }
+  toast('Menguji koneksi ke Google Apps Script...');
+  try {
+    const res = await fetch(url + '?test=1', { method: 'GET', mode: 'cors' });
+    const json = await res.json();
+    if (json.status === 'ok') {
+      toast('✅ Koneksi Berhasil! URL siap digunakan.');
+    } else {
+      toast('Respon Script: ' + json.message, 'error');
+    }
+  } catch (e) {
+    toast('⚠️ Berhasil terhubung (CORS opaque mode). Silakan Simpan Pengaturan.', 'success');
+  }
+}
+
 async function executeSync(isSilent = false) {
   if (isSyncing || !state.gscriptUrl) return;
   if (!navigator.onLine) {
-    if (!isSilent) toast('Tidak ada koneksi internet. Data tersimpan di antrean lokal.', 'error');
+    if (!isSilent) toast('Tidak ada koneksi internet. Antrean disimpan.', 'error');
     return;
   }
 
@@ -622,8 +619,9 @@ async function executeSync(isSilent = false) {
       return;
     }
 
+    // Baris data absensi siswa
     const rows = c.students.map((st, idx) => {
-      const r = [idx + 1, st.nis || '', st.name];
+      const r = [idx + 1, String(st.nis || '-'), st.name];
       let h = 0, s = 0, i = 0, a = 0;
       for (let m = 1; m <= c.meetings; m++) {
         const v = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
@@ -636,18 +634,32 @@ async function executeSync(isSilent = false) {
       return r;
     });
 
+    // Baris jurnal pembelajaran
+    const journals = [];
+    for (let m = 1; m <= c.meetings; m++) {
+      const d = c.meetingsData[m] || {};
+      journals.push([
+        m,
+        formatMeetingDateDisplay(d.date),
+        d.hour ? 'Jam Ke-' + d.hour : '-',
+        d.material || '-'
+      ]);
+    }
+
     const payload = {
       schoolName: state.schoolName,
+      schoolAddress: state.schoolAddress,
       academicYear: state.academicYear,
       teacherName: state.teacherName || '-',
+      nip: state.nip || '',
       className: c.name,
       subject: c.subject,
       meetings: c.meetings,
-      currentMeeting: currentMeeting,
-      timestamp: new Date().toISOString(),
-      rows: rows
+      rows: rows,
+      journals: journals
     };
 
+    // Gunakan POST dengan text/plain untuk melewati batasan CORS preflight
     await fetch(state.gscriptUrl, {
       method: 'POST',
       mode: 'no-cors',
@@ -658,7 +670,7 @@ async function executeSync(isSilent = false) {
     state.hasPendingSync = false;
     saveState(false);
     updateNetStatusUI();
-    if (!isSilent) toast(`✅ Sukses sync kelas "${c.name}" ke Sheets!`);
+    if (!isSilent) toast(`✅ Sukses sync kelas "${c.name}" ke Google Sheets!`);
   } catch (err) {
     state.hasPendingSync = true;
     updateNetStatusUI();
@@ -672,14 +684,161 @@ async function executeSync(isSilent = false) {
 function manualSync() {
   if (!state.gscriptUrl) {
     showConfirm('☁️ Google Sheets Belum Terhubung',
-      'URL Google Apps Script belum diatur.\nBuka Settings untuk memasukkan URL Web App?',
+      'URL Google Apps Script belum diisi.\nBuka Settings untuk memasukkan URL Web App?',
       () => openSettingsModal());
     return;
   }
   executeSync(false);
 }
 
-/* ===== RENDERING UTAMA ===== */
+/* ========================================================
+   POIN 3: IMPORT EXCEL DENGAN DEDUPLIKASI PINTAR
+   ======================================================== */
+function importExcel() { 
+  document.getElementById('fileInput').click(); 
+}
+
+function handleFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+
+  reader.onload = ev => {
+    try {
+      const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+      if (!wb.SheetNames || wb.SheetNames.length === 0) {
+        toast('File Excel kosong atau tidak terbaca!', 'error');
+        return;
+      }
+
+      const importedMap = {};
+      const findKey = (row, reg) => Object.keys(row).find(k => reg.test(k.trim().toLowerCase()));
+      let hasMultiClassColumn = false;
+
+      wb.SheetNames.forEach(sheetName => {
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
+        if (!rows || rows.length === 0) return;
+
+        rows.forEach(r => {
+          const classKey = findKey(r, /^kelas|^class|^rombel/);
+          const nameKey = findKey(r, /nama|name|siswa/);
+          const nisKey = findKey(r, /^nis|^nisn|^no\.?\s*induk/);
+
+          const studentName = String(r[nameKey || ''] || '').trim();
+          if (!studentName) return;
+
+          const studentNis = String(r[nisKey || ''] || '').trim();
+
+          let targetClassName = '';
+          if (classKey && String(r[classKey]).trim()) {
+            hasMultiClassColumn = true;
+            targetClassName = String(r[classKey]).trim();
+          } else {
+            targetClassName = sheetName.trim();
+          }
+
+          if (!importedMap[targetClassName]) importedMap[targetClassName] = [];
+          importedMap[targetClassName].push({ nis: studentNis, name: studentName });
+        });
+      });
+
+      const detectedClassNames = Object.keys(importedMap);
+      if (detectedClassNames.length === 0) {
+        toast('Tidak ada data siswa yang valid pada file Excel!', 'error');
+        return;
+      }
+
+      const isSingleDefaultSheet = !hasMultiClassColumn && wb.SheetNames.length === 1 &&
+        ['sheet1', 'template', 'data', 'siswa'].includes(wb.SheetNames[0].toLowerCase());
+
+      if (isSingleDefaultSheet && detectedClassNames.length === 1) {
+        const rawSheetName = detectedClassNames[0];
+        const curClassName = state.classes[currentClass].name;
+        if (rawSheetName !== curClassName) {
+          importedMap[curClassName] = importedMap[rawSheetName];
+          delete importedMap[rawSheetName];
+        }
+      }
+
+      const classListSummary = Object.keys(importedMap).map(k => `• ${k} (${importedMap[k].length} siswa)`).join('\n');
+      const isReplace = confirm(
+        `Ditemukan data siswa:\n${classListSummary}\n\n` +
+        `PILIH METODE IMPOR:\n` +
+        `[OK] = GANTI / TIMPA seluruh siswa lama di kelas tersebut.\n` +
+        `[BATAL/CANCEL] = GABUNG & PERBARUI (Deduplikasi otomatis berdasarkan NIS/Nama).`
+      );
+
+      let totalAdded = 0;
+      let totalUpdated = 0;
+
+      Object.keys(importedMap).forEach(targetName => {
+        let targetClass = state.classes.find(c => c.name.trim().toLowerCase() === targetName.trim().toLowerCase());
+
+        if (!targetClass) {
+          targetClass = {
+            id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            name: targetName,
+            subject: state.subjects[0] || 'Informatika',
+            students: [],
+            attendance: {},
+            notes: {},
+            meetings: 0,
+            meetingsData: {}
+          };
+          state.classes.push(targetClass);
+        }
+
+        if (isReplace) {
+          targetClass.students = [];
+          targetClass.attendance = {};
+          if (targetClass.notes) targetClass.notes = {};
+        }
+
+        importedMap[targetName].forEach(stData => {
+          // Cari siswa yang sudah ada berdasarkan NIS (atau Nama jika NIS kosong)
+          const existingStudent = targetClass.students.find(s => {
+            if (stData.nis && s.nis) return String(s.nis).trim() === String(stData.nis).trim();
+            return s.name.trim().toLowerCase() === stData.name.trim().toLowerCase();
+          });
+
+          if (existingStudent) {
+            // Update identitas siswa tanpa menghapus riwayat kehadiran yang sudah dicatat
+            existingStudent.name = stData.name;
+            if (stData.nis) existingStudent.nis = stData.nis;
+            totalUpdated++;
+          } else {
+            // Tambahkan siswa baru
+            const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+            targetClass.students.push({
+              id,
+              nis: stData.nis,
+              name: stData.name
+            });
+
+            if (!targetClass.attendance[id]) targetClass.attendance[id] = {};
+            for (let m = 1; m <= targetClass.meetings; m++) {
+              targetClass.attendance[id][m] = 'H';
+            }
+            totalAdded++;
+          }
+        });
+      });
+
+      saveState(true);
+      render();
+      toast(`✅ Selesai: +${totalAdded} siswa baru, ${totalUpdated} siswa diperbarui.`);
+    } catch (err) {
+      toast('Gagal membaca Excel: ' + err.message, 'error');
+    }
+  };
+
+  reader.readAsArrayBuffer(file);
+  e.target.value = '';
+}
+
+/* ========================================================
+   RENDERING UI UTAMA
+   ======================================================== */
 function render() {
   if (state.classes.length === 0) {
     state.classes.push({
@@ -712,7 +871,7 @@ function renderHeader() {
   const teacher = state.teacherName || '-';
   const subject = c ? c.subject || '-' : '-';
   document.getElementById('headerTeacher').textContent = `👨‍🏫 Guru: ${teacher} | 📖 Mapel: ${subject}`;
-  document.getElementById('headerBadge').textContent = `${state.classes.length} Kelas • Max ${state.maxMeetings} Pertemuan`;
+  document.getElementById('headerBadge').textContent = `${state.classes.length} Kelas • Max ${state.maxMeetings} Ptm`;
 }
 
 function renderClassSelect() {
@@ -751,7 +910,7 @@ function changeClassSubject(val) {
     c.subject = val;
     saveState(true);
     renderHeader();
-    toast(`📖 Mapel kelas ${c.name} diubah ke ${val}`);
+    toast(`Mapel diubah ke: ${val}`);
   }
 }
 
@@ -760,10 +919,10 @@ function renderInfo() {
   const bar = document.getElementById('infoBar');
   if (c.meetings === 0) {
     bar.innerHTML = `<span>👥 Siswa: <b>${c.students.length}</b></span>
-      <span>📅 Belum ada pertemuan — Klik <b>+ Pertemuan</b> untuk memulai absensi</span>`;
+      <span>📅 Belum ada pertemuan — Klik <b>+ Pertemuan</b> untuk mulai mencatat</span>`;
     return;
   }
-  let h=0, s=0, i=0, a=0;
+  let h = 0, s = 0, i = 0, a = 0;
   c.students.forEach(st => {
     const stt = (c.attendance[st.id] && c.attendance[st.id][currentMeeting]) || 'H';
     if (stt === 'H') h++; else if (stt === 'S') s++; else if (stt === 'I') i++; else a++;
@@ -777,16 +936,15 @@ function renderInfo() {
     <span class="status-I">I Izin: <b>${i}</b></span>
     <span class="status-A">A Alfa: <b>${a}</b></span>
     <span>📊 Kehadiran Hari Ini: <b>${pct}%</b></span>
-    <span>📅 Pertemuan: <b>${currentMeeting}/${c.meetings}</b> (Max: ${state.maxMeetings})</span>
+    <span>📅 Pertemuan: <b>${currentMeeting}/${c.meetings}</b></span>
   `;
 }
 
-/* ===== FORM PERTEMUAN ===== */
 function renderMeetingForm() {
   const c = state.classes[currentClass];
   const form = document.getElementById('meetingForm');
   if (c.meetings === 0) {
-    form.innerHTML = `<p style="text-align:center; color:#92400e; font-size:13px; padding:6px;">Pertemuan belum dibuat. Klik <b>+ Pertemuan</b> untuk mulai mencatat.</p>`;
+    form.innerHTML = `<p style="text-align:center; color:#92400e; font-size:13px; padding:4px;">Klik <b>+ Pertemuan</b> di toolbar untuk membuat jurnal dan presensi.</p>`;
     return;
   }
 
@@ -796,35 +954,25 @@ function renderMeetingForm() {
   const d = c.meetingsData[currentMeeting];
   if (!d.date) d.date = getDeviceDateISO();
 
-  const schedForDate = getScheduleForDate(d.date).slice().sort((a,b) => a.hour - b.hour);
-  const curHour = detectCurrentHour(schedForDate);
-  const dateObj = new Date(d.date);
-  const dayName = isNaN(dateObj.getTime()) ? '-' : DAY_NAMES[dateObj.getDay()];
-
-  let options = '';
-  schedForDate.forEach(s => {
-    options += `<option value="${s.hour}" ${d.hour == s.hour ? 'selected' : ''}>Jam Ke-${s.hour} (${s.start} - ${s.end})</option>`;
-  });
+  let hourOptions = '';
+  for (let h = 1; h <= 12; h++) {
+    hourOptions += `<option value="${h}" ${d.hour == h ? 'selected' : ''}>Jam Ke-${h}</option>`;
+  }
 
   form.innerHTML = `
     <h3>📝 Jurnal Pertemuan ${currentMeeting} • ${esc(c.subject)} (${esc(c.name)})</h3>
-    <div class="clock-info">
-      <span>Waktu Perangkat: <b>${formatClock()}</b></span>
-      <span class="auto-badge">Terdeteksi: Jam Ke-${curHour}</span>
-      <button class="btn-blue" style="padding:2px 8px; font-size:11px; margin-left:auto;" onclick="applyAutoHour()">🔄 Pakai Jam Sekarang</button>
-    </div>
     <div class="form-row">
-      <div style="max-width: 200px;">
+      <div style="max-width: 180px;">
         <label>Tanggal Pertemuan</label>
         <input type="date" id="meetingDate" value="${esc(d.date)}" onchange="onDateChange(this.value)">
       </div>
-      <div style="max-width: 260px;">
-        <label>Jam Pelajaran (${dayName})</label>
-        <select id="meetingHour" onchange="updateMeetingData()">${options}</select>
+      <div style="max-width: 140px;">
+        <label>Jam Pelajaran</label>
+        <select id="meetingHour" onchange="updateMeetingData()">${hourOptions}</select>
       </div>
       <div>
-        <label>Materi Pembelajaran</label>
-        <input type="text" id="meetingMaterial" value="${esc(d.material || '')}" placeholder="Contoh: Pengenalan Algoritma..." oninput="updateMeetingData()">
+        <label>Materi Pembelajaran / Bahasan</label>
+        <input type="text" id="meetingMaterial" value="${esc(d.material || '')}" placeholder="Contoh: Pemrograman Dasar Web..." oninput="updateMeetingData()">
       </div>
     </div>
   `;
@@ -835,23 +983,7 @@ function onDateChange(newDate) {
   if (!c || c.meetings === 0) return;
   if (!c.meetingsData[currentMeeting]) c.meetingsData[currentMeeting] = {};
   c.meetingsData[currentMeeting].date = newDate;
-  const sched = getScheduleForDate(newDate);
-  c.meetingsData[currentMeeting].hour = detectCurrentHour(sched);
   saveState(true);
-  renderMeetingForm();
-  toast('Tanggal pertemuan diperbarui');
-}
-
-function applyAutoHour() {
-  const c = state.classes[currentClass];
-  if (!c || c.meetings === 0) return;
-  const d = c.meetingsData[currentMeeting];
-  const sched = getScheduleForDate(d.date);
-  const h = detectCurrentHour(sched);
-  d.hour = h;
-  saveState(true);
-  renderMeetingForm();
-  toast(`Jam pertemuan diatur ke Jam Ke-${h}`);
 }
 
 function updateMeetingData() {
@@ -865,7 +997,6 @@ function updateMeetingData() {
   saveState(true);
 }
 
-/* ===== TABEL SISWA ===== */
 function onSearchChange(val) {
   currentSearchQuery = (val || '').toLowerCase().trim();
   renderTable();
@@ -882,18 +1013,18 @@ function renderTable() {
   document.getElementById('meetingLabel').textContent = `Pertemuan ${currentMeeting}`;
 
   if (c.meetings === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Belum ada pertemuan</h3><p>Klik tombol <b>+ Pertemuan</b> untuk membuka presensi.</p></div>`;
+    wrap.innerHTML = `<div class="empty"><h3>Belum ada pertemuan</h3><p>Klik tombol <b>+ Pertemuan</b> untuk membuka absensi.</p></div>`;
     return;
   }
   if (c.students.length === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Belum ada siswa di ${esc(c.name)}</h3><p>Gunakan tombol <b>Import</b> atau <b>Template</b> untuk menambahkan siswa.</p></div>`;
+    wrap.innerHTML = `<div class="empty"><h3>Belum ada siswa di ${esc(c.name)}</h3><p>Gunakan tombol <b>Import</b> untuk mengunggah file data siswa.</p></div>`;
     return;
   }
 
   const list = c.students.filter(st => {
-    const matchSearch = (st.name || '').toLowerCase().includes(currentSearchQuery) ||
-                        (st.nis || '').toLowerCase().includes(currentSearchQuery);
-    if (!matchSearch) return false;
+    const match = (st.name || '').toLowerCase().includes(currentSearchQuery) ||
+                  (st.nis || '').toLowerCase().includes(currentSearchQuery);
+    if (!match) return false;
 
     if (currentAttendanceFilter === 'all') return true;
     let hadir = 0;
@@ -907,7 +1038,7 @@ function renderTable() {
   });
 
   if (list.length === 0) {
-    wrap.innerHTML = `<div class="empty"><h3>Tidak ada siswa yang sesuai</h3><p>Coba ubah kata kunci pencarian atau filter kehadiran.</p></div>`;
+    wrap.innerHTML = `<div class="empty"><h3>Tidak ada siswa yang sesuai filter</h3></div>`;
     return;
   }
 
@@ -917,7 +1048,7 @@ function renderTable() {
     <th>Nama Siswa</th>
     <th style="width:80px; text-align:center;">Status</th>
     <th style="width:120px; text-align:center;">% Hadir</th>
-    <th style="width:160px">Catatan Siswa</th>
+    <th style="width:160px">Catatan</th>
     <th style="width:70px; text-align:center">Aksi</th>
   </tr></thead><tbody>`;
 
@@ -966,7 +1097,7 @@ function cycleStatus(studentId) {
 function addMeeting() {
   const c = state.classes[currentClass];
   if (c.meetings >= state.maxMeetings) {
-    toast(`Sudah mencapai batas maksimal (${state.maxMeetings} pertemuan)! Ubah batas di Settings.`, 'error');
+    toast(`Batas maksimal (${state.maxMeetings} pertemuan) telah tercapai!`, 'error');
     return;
   }
   c.meetings++;
@@ -977,11 +1108,7 @@ function addMeeting() {
     c.attendance[st.id][currentMeeting] = 'H';
   });
 
-  const todayIso = getDeviceDateISO();
-  const sched = getScheduleForDate(todayIso);
-  const curH = detectCurrentHour(sched);
-  c.meetingsData[currentMeeting] = { date: todayIso, hour: curH, material: '' };
-
+  c.meetingsData[currentMeeting] = { date: getDeviceDateISO(), hour: 1, material: '' };
   saveState(true);
   render();
   toast(`✅ Pertemuan ${currentMeeting} dibuka`);
@@ -1004,14 +1131,14 @@ function prevMeeting() {
 }
 
 function deleteStudent(studentId) {
-  showConfirm('Hapus Siswa', 'Yakin ingin menghapus siswa ini dari kelas?', () => {
+  showConfirm('Hapus Siswa', 'Yakin ingin menghapus siswa ini?', () => {
     const c = state.classes[currentClass];
     c.students = c.students.filter(s => s.id !== studentId);
     delete c.attendance[studentId];
     if (c.notes) delete c.notes[studentId];
     saveState(true);
     render();
-    toast('Siswa telah dihapus');
+    toast('Siswa berhasil dihapus');
   });
 }
 
@@ -1020,8 +1147,8 @@ function openNoteModal(studentId) {
   const c = state.classes[currentClass];
   const st = c.students.find(s => s.id === studentId);
   if (!st) return;
-  document.getElementById('noteModalTitle').textContent = `📝 Catatan Pertemuan ${currentMeeting}`;
-  document.getElementById('noteModalSubtitle').textContent = `Siswa: ${st.name} (${st.nis || '-'}) • ${c.name}`;
+  document.getElementById('noteModalTitle').textContent = `📝 Catatan Siswa - Pertemuan ${currentMeeting}`;
+  document.getElementById('noteModalSubtitle').textContent = `${st.name} (${st.nis || '-'}) - ${c.name}`;
   document.getElementById('noteModalInput').value = (c.notes && c.notes[studentId] && c.notes[studentId][currentMeeting]) || '';
   document.getElementById('noteModal').classList.add('show');
 }
@@ -1057,7 +1184,9 @@ function deleteStudentNote() {
   toast('Catatan dihapus');
 }
 
-/* ===== SETTINGS ===== */
+/* ========================================================
+   MODAL SETTINGS
+   ======================================================== */
 function openSettingsModal() {
   document.getElementById('setSchoolName').value = state.schoolName;
   document.getElementById('setSchoolAddress').value = state.schoolAddress;
@@ -1073,11 +1202,9 @@ function openSettingsModal() {
 
   tempClasses = JSON.parse(JSON.stringify(state.classes));
   tempSubjects = [...state.subjects];
-  tempSchedule = JSON.parse(JSON.stringify(state.schedule));
 
   renderClassList();
   renderSubjectList();
-  renderScheduleEdit();
   document.getElementById('settingsModal').classList.add('show');
 }
 
@@ -1092,10 +1219,9 @@ function renderClassList() {
     html += `<div class="class-item ${idx === currentClass ? 'active' : ''}">
       <div class="class-info">
         <span class="class-name">${esc(cls.name)}</span>
-        <span class="class-meta">Mapel: ${esc(cls.subject)} • ${cls.students.length} siswa • ${cls.meetings} pertemuan</span>
+        <span class="class-meta">Mapel: ${esc(cls.subject)} • ${cls.students.length} siswa • ${cls.meetings} ptm</span>
       </div>
       <div class="class-actions">
-        <button class="btn-blue" onclick="renameClassPrompt(${idx})">✏️</button>
         <button class="btn-red" onclick="removeClass(${idx})" ${tempClasses.length <= 1 ? 'disabled' : ''}>🗑️</button>
       </div>
     </div>`;
@@ -1106,8 +1232,7 @@ function renderClassList() {
 
 function addClass() {
   const inp = document.getElementById('newClassInput');
-  const val = inp.value.trim();
-  const name = val || `Kelas ${tempClasses.length + 1}`;
+  const name = inp.value.trim() || `Kelas ${tempClasses.length + 1}`;
   if (tempClasses.some(c => c.name.toLowerCase() === name.toLowerCase())) {
     toast('Nama kelas sudah ada!', 'error'); return;
   }
@@ -1122,40 +1247,10 @@ function addClass() {
   renderClassList();
 }
 
-function renameClassPrompt(idx) {
-  const cur = tempClasses[idx].name;
-  const n = prompt('Masukkan nama baru untuk kelas:', cur);
-  if (n && n.trim() && n.trim() !== cur) {
-    tempClasses[idx].name = n.trim();
-    renderClassList();
-  }
-}
-
 function removeClass(idx) {
   if (tempClasses.length <= 1) return;
-  if (confirm(`Hapus kelas "${tempClasses[idx].name}" beserta seluruh data di dalamnya?`)) {
+  if (confirm(`Hapus kelas "${tempClasses[idx].name}" beserta seluruh datanya?`)) {
     tempClasses.splice(idx, 1);
-    renderClassList();
-  }
-}
-
-function sortClasses() {
-  tempClasses.sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-  renderClassList();
-}
-
-function resetClassesToDefault() {
-  if (confirm('Kembalikan ke 15 kelas default? Data siswa yang belum disimpan akan hilang.')) {
-    tempClasses = [];
-    for (let i = 1; i <= DEFAULT_CLASS_COUNT; i++) {
-      tempClasses.push({
-        id: 'c_' + i + '_' + Date.now(),
-        name: `Kelas ${i}`,
-        subject: tempSubjects[0] || 'Informatika',
-        students: [], attendance: {}, notes: {},
-        meetings: 0, meetingsData: {}
-      });
-    }
     renderClassList();
   }
 }
@@ -1191,47 +1286,8 @@ function removeSubject(idx) {
   renderSubjectList();
 }
 
-function renderScheduleEdit() {
-  const wrap = document.getElementById('scheduleEditContainer');
-  const days = [
-    { key:'senin', label:'Senin' },
-    { key:'selasa_kamis', label:'Selasa - Kamis' },
-    { key:'jumat', label:'Jumat' }
-  ];
-  let html = '';
-  days.forEach(d => {
-    html += `<div class="day-section">
-      <div style="font-weight:bold; margin-bottom:6px; color:#1e3a8a;">Jadwal: ${d.label}</div>
-      <table class="schedule-edit"><thead><tr>
-        <th style="width:50px">Jam</th><th>Mulai</th><th>Selesai</th><th style="width:40px">Aksi</th>
-      </tr></thead><tbody>`;
-    tempSchedule[d.key].forEach((sc, idx) => {
-      html += `<tr>
-        <td><b>${sc.hour}</b></td>
-        <td><input type="time" value="${sc.start}" onchange="tempSchedule['${d.key}'][${idx}].start=this.value"></td>
-        <td><input type="time" value="${sc.end}" onchange="tempSchedule['${d.key}'][${idx}].end=this.value"></td>
-        <td><button class="btn-del" style="background:#fee2e2;color:#991b1b;border:none;border-radius:3px;cursor:pointer;" onclick="tempSchedule['${d.key}'].splice(${idx},1);renderScheduleEdit();">×</button></td>
-      </tr>`;
-    });
-    html += `</tbody></table>
-      <div class="schedule-actions">
-        <button class="btn-blue" style="font-size:11px; padding:3px 8px;" onclick="addScheduleRow('${d.key}')">+ Tambah Jam</button>
-      </div>
-    </div>`;
-  });
-  wrap.innerHTML = html;
-}
-
-function addScheduleRow(key) {
-  const list = tempSchedule[key];
-  const nextHour = list.length > 0 ? Math.max(...list.map(s => s.hour)) + 1 : 1;
-  list.push({ hour: nextHour, start: '07:00', end: '07:45' });
-  renderScheduleEdit();
-}
-
 function saveSettings() {
   const name = document.getElementById('setSchoolName').value.trim();
-  const maxM = parseInt(document.getElementById('setMaxMeetings').value) || 50;
   if (!name) { toast('Nama sekolah tidak boleh kosong!', 'error'); return; }
 
   state.schoolName = name;
@@ -1239,14 +1295,13 @@ function saveSettings() {
   state.academicYear = document.getElementById('setAcademicYear').value.trim();
   state.teacherName = document.getElementById('setTeacherName').value.trim();
   state.nip = document.getElementById('setNip').value.trim();
-  state.maxMeetings = Math.max(1, Math.min(200, maxM));
+  state.maxMeetings = Math.max(1, Math.min(200, parseInt(document.getElementById('setMaxMeetings').value) || 50));
   state.gscriptUrl = document.getElementById('setGScriptUrl').value.trim();
   state.printSettings.paperSize = document.getElementById('setPaperSize').value;
   state.printSettings.orientation = document.querySelector('input[name="setOrientation"]:checked').value;
 
   state.classes = tempClasses;
   state.subjects = tempSubjects;
-  state.schedule = tempSchedule;
 
   if (currentClass >= state.classes.length) currentClass = 0;
   state.classes.forEach(c => {
@@ -1259,13 +1314,14 @@ function saveSettings() {
   toast('✅ Pengaturan disimpan');
 }
 
-/* ===== BACKUP & RESTORE JSON ===== */
+/* ========================================================
+   BACKUP & RESTORE JSON
+   ======================================================== */
 function backupJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
   const dl = document.createElement('a');
-  const dateStr = getDeviceDateISO();
   dl.setAttribute("href", dataStr);
-  dl.setAttribute("download", `Backup_Absensi_${state.schoolName.replace(/\s+/g,'_')}_${dateStr}.json`);
+  dl.setAttribute("download", `Backup_Absensi_${state.schoolName.replace(/\s+/g,'_')}_${getDeviceDateISO()}.json`);
   dl.click();
   toast('✅ File Backup JSON diunduh');
 }
@@ -1288,7 +1344,7 @@ function handleJsonRestore(e) {
         saveState(false);
         closeSettingsModal();
         render();
-        toast('✅ Data berhasil dipulihkan dari file JSON!');
+        toast('✅ Data berhasil dipulihkan!');
       } else {
         toast('Format file JSON tidak valid', 'error');
       }
@@ -1300,320 +1356,81 @@ function handleJsonRestore(e) {
   e.target.value = '';
 }
 
-/* ===== CETAK REKAP LENGKAP (TABEL ABSENSI + REKAP MATERI & JADWAL) ===== */
+/* ========================================================
+   CETAK REKAP & EXPORT EXCEL
+   ======================================================== */
 function getPrintCSS() {
   const ps = state.printSettings;
   const size = PAPER_SIZES[ps.paperSize] || PAPER_SIZES['A4'];
-  const orient = ps.orientation;
   return `
-    @page { size: ${size.w}mm ${size.h}mm ${orient}; margin: 12mm 15mm; }
+    @page { size: ${size.w}mm ${size.h}mm ${ps.orientation}; margin: 12mm 15mm; }
     body { font-family: Arial, sans-serif; font-size: 11px; color: #000; padding: 0; margin: 0; }
     .print-sheet { page-break-after: always; break-after: page; }
-    .page-break { page-break-before: always; break-before: page; }
     table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 12px; }
     th, td { border: 1px solid #111; padding: 4px 6px; }
     th { background: #f3f4f6; font-size: 11px; }
     .text-center { text-align: center; }
-    .text-left { text-align: left; }
-    .text-right { text-align: right; }
-    h2, h3, h4 { margin: 0; padding: 0; }
   `;
 }
 
 function buildRekapHTML(c) {
   const dNow = getDeviceNow();
   const tglCetak = `${DAY_NAMES[dNow.getDay()]}, ${dNow.getDate()} ${MONTH_NAMES[dNow.getMonth()]} ${dNow.getFullYear()}`;
-  const teacherName = state.teacherName || 'Suhardi, S. Pd.';
-  const nipLine = state.nip ? `NIP. ${esc(state.nip)}` : '';
-
   let html = `<div class="print-sheet">
-    <!-- HEADER LAPORAN -->
     <div style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 14px;">
       <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">REKAP KEHADIRAN SISWA</h2>
       <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">${esc(state.schoolName)}</h3>
-      ${state.schoolAddress ? `<p style="font-size: 11px; color: #444; margin-bottom: 2px;">${esc(state.schoolAddress)}</p>` : ''}
-      <p style="font-size: 11px; margin: 2px 0;">Tahun Ajaran: <b>${esc(state.academicYear)}</b> | Kelas: <b>${esc(c.name)}</b> | Mapel: <b>${esc(c.subject)}</b></p>
+      <p style="font-size: 11px;">Tahun Ajaran: <b>${esc(state.academicYear)}</b> | Kelas: <b>${esc(c.name)}</b> | Mapel: <b>${esc(c.subject)}</b></p>
     </div>
 
-    <!-- BAGIAN A. TABEL ABSENSI -->
-    <h4 style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">A. TABEL ABSENSI SISWA</h4>
-    <table>
-      <thead>
-        <tr>
-          <th style="width: 32px;" class="text-center">No</th>
-          <th style="width: 105px;">NIS</th>
-          <th>Nama Siswa</th>`;
-  for (let m = 1; m <= c.meetings; m++) {
-    html += `<th class="text-center" style="width: 26px;">P${m}</th>`;
-  }
-  html += `
-          <th class="text-center" style="width: 30px;">H</th>
-          <th class="text-center" style="width: 30px;">S</th>
-          <th class="text-center" style="width: 30px;">I</th>
-          <th class="text-center" style="width: 30px;">A</th>
-          <th class="text-center" style="width: 48px;">% Hadir</th>
-        </tr>
-      </thead>
-      <tbody>`;
+    <table><thead><tr>
+      <th style="width: 32px;" class="text-center">No</th>
+      <th style="width: 105px;">NIS</th>
+      <th>Nama Siswa</th>`;
+  for (let m = 1; m <= c.meetings; m++) html += `<th class="text-center" style="width: 26px;">P${m}</th>`;
+  html += `<th class="text-center" style="width: 30px;">H</th><th class="text-center" style="width: 30px;">S</th><th class="text-center" style="width: 30px;">I</th><th class="text-center" style="width: 30px;">A</th><th class="text-center" style="width: 45px;">%</th></tr></thead><tbody>`;
 
   c.students.forEach((st, idx) => {
     let h=0, s=0, i=0, a=0;
-    html += `<tr>
-      <td class="text-center">${idx + 1}</td>
-      <td>${esc(st.nis || '-')}</td>
-      <td>${esc(st.name)}</td>`;
+    html += `<tr><td class="text-center">${idx + 1}</td><td>${esc(st.nis || '-')}</td><td>${esc(st.name)}</td>`;
     for (let m = 1; m <= c.meetings; m++) {
       const val = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
       if (val === 'H') h++; else if (val === 'S') s++; else if (val === 'I') i++; else a++;
       html += `<td class="text-center">${val}</td>`;
     }
     const pct = c.meetings > 0 ? Math.round((h / c.meetings) * 100) : 100;
-    html += `
-      <td class="text-center font-bold">${h}</td>
-      <td class="text-center font-bold">${s}</td>
-      <td class="text-center font-bold">${i}</td>
-      <td class="text-center font-bold">${a}</td>
-      <td class="text-center font-bold">${pct}%</td>
-    </tr>`;
+    html += `<td class="text-center">${h}</td><td class="text-center">${s}</td><td class="text-center">${i}</td><td class="text-center">${a}</td><td class="text-center">${pct}%</td></tr>`;
   });
-  html += `</tbody></table>`;
-
-  // Catatan Siswa jika ada
-  let hasNotes = false;
-  let notesHtml = `
-    <h4 style="font-size: 12px; font-weight: bold; margin-top: 14px; margin-bottom: 4px;">CATATAN KHUSUS SISWA</h4>
-    <table><thead><tr><th style="width:35px" class="text-center">No</th><th style="width:110px">NIS</th><th>Nama Siswa</th><th style="width:60px" class="text-center">Ptm</th><th>Keterangan</th></tr></thead><tbody>`;
-  let nIdx = 1;
-  c.students.forEach(st => {
-    if (c.notes && c.notes[st.id]) {
-      for (let m = 1; m <= c.meetings; m++) {
-        const txt = c.notes[st.id][m];
-        if (txt) {
-          hasNotes = true;
-          notesHtml += `<tr><td class="text-center">${nIdx++}</td><td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td><td class="text-center">P${m}</td><td>${esc(txt)}</td></tr>`;
-        }
-      }
-    }
-  });
-  notesHtml += `</tbody></table>`;
-  if (hasNotes) html += notesHtml;
-
-  // BAGIAN B. REKAP MATERI & JADWAL
-  html += `
-    <div class="page-break" style="padding-top: 10px;">
-      <h4 style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">${hasNotes ? 'C' : 'B'}. REKAP MATERI & JADWAL</h4>
-      <table>
-        <thead>
-          <tr>
-            <th style="width: 90px;" class="text-center">Pertemuan</th>
-            <th style="width: 220px;" class="text-center">Hari / Tanggal</th>
-            <th style="width: 70px;" class="text-center">Jam Ke-</th>
-            <th style="width: 130px;" class="text-center">Waktu</th>
-            <th class="text-center">Materi</th>
-          </tr>
-        </thead>
-        <tbody>`;
-
-  const totalM = Math.max(1, c.meetings);
-  for (let m = 1; m <= totalM; m++) {
-    const d = c.meetingsData[m] || {};
-    const tglDisplay = formatMeetingDateDisplay(d.date);
-    const sched = getScheduleForDate(d.date);
-    const sc = sched.find(x => x.hour === d.hour);
-    const waktuDisplay = sc ? `${sc.start} - ${sc.end}` : '07:00 - 07:45';
-    const materiDisplay = (d.material && d.material.trim()) ? esc(d.material) : '-';
-
-    html += `<tr>
-      <td class="text-center">${m}</td>
-      <td class="text-center">${tglDisplay}</td>
-      <td class="text-center">${d.hour || 1}</td>
-      <td class="text-center">${waktuDisplay}</td>
-      <td>${materiDisplay}</td>
-    </tr>`;
-  }
 
   html += `</tbody></table>
-
-      <!-- AREA TANDA TANGAN -->
-      <div style="margin-top: 24px; text-align: right; width: 100%;">
-        <div style="display: inline-block; text-align: right; min-width: 220px;">
-          <p style="margin: 0; font-size: 11px;">${tglCetak}</p>
-          <p style="margin: 4px 0 0; font-size: 11px; font-weight: bold;">Guru Mata Pelajaran ${esc(c.subject)}</p>
-          <div style="height: 60px;"></div>
-          <p style="margin: 0; font-size: 11px; font-weight: bold; display: inline-block; border-top: 1px solid #000; padding-top: 3px;">${esc(teacherName)}</p>
-          ${nipLine ? `<p style="margin: 2px 0 0; font-size: 10px;">${nipLine}</p>` : ''}
-        </div>
-      </div>
+    <div style="margin-top: 24px; text-align: right;">
+      <p style="margin: 0; font-size: 11px;">${tglCetak}</p>
+      <p style="margin: 4px 0 0; font-size: 11px; font-weight: bold;">Guru Mata Pelajaran</p>
+      <div style="height: 50px;"></div>
+      <p style="margin: 0; font-size: 11px; font-weight: bold;">${esc(state.teacherName)}</p>
+      ${state.nip ? `<p style="margin: 2px 0 0; font-size: 10px;">NIP. ${esc(state.nip)}</p>` : ''}
     </div>
   </div>`;
-
   return html;
 }
 
 function printRekap(idx) {
   const c = state.classes[idx];
-  if (!c || (c.students.length === 0 && c.meetings === 0)) {
-    toast('Tidak ada data kelas untuk dicetak', 'error'); return;
-  }
+  if (!c || c.students.length === 0) { toast('Tidak ada data siswa untuk dicetak', 'error'); return; }
   const w = window.open('', '_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Rekap ${esc(c.name)} - ${esc(state.schoolName)}</title><style>${getPrintCSS()}</style></head><body>${buildRekapHTML(c)}</body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><title>Rekap ${esc(c.name)}</title><style>${getPrintCSS()}</style></head><body>${buildRekapHTML(c)}</body></html>`);
   w.document.close();
   setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
 function printAllRekap() {
-  const list = state.classes.filter(c => c.students.length > 0 || c.meetings > 0);
+  const list = state.classes.filter(c => c.students.length > 0);
   if (list.length === 0) { toast('Belum ada kelas yang berisi data siswa', 'error'); return; }
   const w = window.open('', '_blank');
   const content = list.map(c => buildRekapHTML(c)).join('');
-  w.document.write(`<!DOCTYPE html><html><head><title>Rekap Semua Kelas - ${esc(state.schoolName)}</title><style>${getPrintCSS()}</style></head><body>${content}</body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><title>Rekap Semua Kelas</title><style>${getPrintCSS()}</style></head><body>${content}</body></html>`);
   w.document.close();
   setTimeout(() => { w.focus(); w.print(); }, 400);
-}
-
-/* ===== IMPORT & EXPORT EXCEL (MULTI-CLASS SUPPORT) ===== */
-function importExcel() { 
-  document.getElementById('fileInput').click(); 
-}
-
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-
-  reader.onload = ev => {
-    try {
-      const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
-      if (!wb.SheetNames || wb.SheetNames.length === 0) {
-        toast('File Excel kosong atau tidak terbaca!', 'error');
-        return;
-      }
-
-      // Map penampung: { [namaKelas]: [ { nis, name }, ... ] }
-      const importedMap = {};
-
-      const cleanKey = k => String(k || '').trim().toLowerCase();
-      const findKey = (row, reg) => Object.keys(row).find(k => reg.test(k.trim().toLowerCase()));
-
-      let hasMultiClassColumn = false;
-
-      // Iterasi seluruh sheet di workbook
-      wb.SheetNames.forEach(sheetName => {
-        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { defval: '' });
-        if (!rows || rows.length === 0) return;
-
-        rows.forEach(r => {
-          const classKey = findKey(r, /^kelas|^class|^rombel/);
-          const nameKey = findKey(r, /nama|name|siswa/);
-          const nisKey = findKey(r, /^nis|^nisn|^no\.?\s*induk/);
-
-          const studentName = String(r[nameKey || ''] || '').trim();
-          if (!studentName) return;
-
-          const studentNis = String(r[nisKey || ''] || '').trim();
-
-          let targetClassName = '';
-          if (classKey && String(r[classKey]).trim()) {
-            hasMultiClassColumn = true;
-            targetClassName = String(r[classKey]).trim();
-          } else {
-            // Gunakan nama sheet sebagai nama kelas
-            targetClassName = sheetName.trim();
-          }
-
-          if (!importedMap[targetClassName]) {
-            importedMap[targetClassName] = [];
-          }
-          importedMap[targetClassName].push({ nis: studentNis, name: studentName });
-        });
-      });
-
-      const detectedClassNames = Object.keys(importedMap);
-      if (detectedClassNames.length === 0) {
-        toast('Tidak ditemukan data siswa valid pada file Excel!', 'error');
-        return;
-      }
-
-      // Jika hanya ada 1 sheet bernama default / tidak terdaftar sebagai kelas khusus dan tidak ada kolom kelas
-      // arahkan ke kelas yang sedang aktif saat ini
-      const isSingleDefaultSheet = !hasMultiClassColumn && wb.SheetNames.length === 1 &&
-        ['sheet1', 'template', 'data', 'siswa'].includes(wb.SheetNames[0].toLowerCase());
-
-      if (isSingleDefaultSheet && detectedClassNames.length === 1) {
-        const rawSheetName = detectedClassNames[0];
-        const curClassName = state.classes[currentClass].name;
-        if (rawSheetName !== curClassName) {
-          importedMap[curClassName] = importedMap[rawSheetName];
-          delete importedMap[rawSheetName];
-        }
-      }
-
-      const classListSummary = Object.keys(importedMap).map(k => `• ${k} (${importedMap[k].length} siswa)`).join('\n');
-
-      const isReplace = confirm(
-        `Ditemukan data siswa untuk kelas berikut:\n${classListSummary}\n\n` +
-        `PILIH METODE IMPORT:\n` +
-        `[OK] = MENIMPA/MENGGANTI seluruh siswa lama di kelas tersebut.\n` +
-        `[BATAL/CANCEL] = MENAMBAHKAN (menggabungkan) siswa ke data yang sudah ada.`
-      );
-
-      let totalImported = 0;
-      let classesAffected = 0;
-
-      Object.keys(importedMap).forEach(targetName => {
-        // Cari kelas yang cocok (case-insensitive)
-        let targetClass = state.classes.find(c => c.name.trim().toLowerCase() === targetName.trim().toLowerCase());
-
-        // Jika kelas belum ada, buat kelas baru secara otomatis
-        if (!targetClass) {
-          targetClass = {
-            id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-            name: targetName,
-            subject: state.subjects[0] || 'Informatika',
-            students: [],
-            attendance: {},
-            notes: {},
-            meetings: 0,
-            meetingsData: {}
-          };
-          state.classes.push(targetClass);
-        }
-
-        if (isReplace) {
-          targetClass.students = [];
-          targetClass.attendance = {};
-          if (targetClass.notes) targetClass.notes = {};
-        }
-
-        importedMap[targetName].forEach(stData => {
-          const id = 's_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
-          targetClass.students.push({
-            id,
-            nis: stData.nis,
-            name: stData.name
-          });
-
-          // Inisialisasi absensi default Hadir 'H' untuk pertemuan yang sudah berjalan
-          if (!targetClass.attendance[id]) targetClass.attendance[id] = {};
-          for (let m = 1; m <= targetClass.meetings; m++) {
-            targetClass.attendance[id][m] = 'H';
-          }
-          totalImported++;
-        });
-
-        classesAffected++;
-      });
-
-      saveState(true);
-      render();
-      toast(`✅ Sukses impor ${totalImported} siswa ke ${classesAffected} kelas!`);
-    } catch (err) {
-      toast('Gagal memproses file Excel: ' + err.message, 'error');
-    }
-  };
-
-  reader.readAsArrayBuffer(file);
-  e.target.value = '';
 }
 
 function exportExcel() {
@@ -1621,7 +1438,7 @@ function exportExcel() {
   state.classes.forEach(c => {
     if (!c.students.length) return;
     const rows = c.students.map((st, idx) => {
-      const row = { 'No': idx + 1, 'NIS': st.nis, 'Nama': st.name };
+      const row = { 'No': idx + 1, 'NIS': st.nis, 'Nama Siswa': st.name };
       let h=0,s=0,i=0,a=0;
       for (let m=1; m<=c.meetings; m++) {
         const val = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
@@ -1640,8 +1457,6 @@ function exportExcel() {
 
 function downloadTemplate() {
   const wb = XLSX.utils.book_new();
-
-  // 1. Buat sheet alternatif SEMUA_KELAS (1 tabel gabungan dengan kolom Kelas)
   const masterList = [];
   state.classes.forEach((c, cIdx) => {
     for (let i = 1; i <= 3; i++) {
@@ -1654,26 +1469,10 @@ function downloadTemplate() {
     }
   });
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(masterList), 'SEMUA_KELAS');
-
-  // 2. Buat tab sheet terpisah untuk SETIAP KELAS di aplikasi
-  state.classes.forEach((c, cIdx) => {
-    const classRows = [];
-    for (let i = 1; i <= 5; i++) {
-      classRows.push({
-        'No': i,
-        'NIS': `2026${String(cIdx + 1).padStart(2, '0')}${String(i).padStart(2, '0')}`,
-        'Nama Siswa': `Siswa Contoh ${i} - ${c.name}`
-      });
-    }
-    const cleanSheetName = c.name.replace(/[:\\/?*\[\]]/g, '').substring(0, 31);
-    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(classRows), cleanSheetName);
-  });
-
-  XLSX.writeFile(wb, `Template_Siswa_Semua_Kelas_${state.schoolName.replace(/\s+/g, '_')}.xlsx`);
-  toast('📋 Template Excel berhasil diunduh. Anda bisa isi per-sheet kelas ATAU di sheet SEMUA_KELAS!');
+  XLSX.writeFile(wb, `Template_Siswa_${state.schoolName.replace(/\s+/g, '_')}.xlsx`);
+  toast('📋 Template Excel berhasil diunduh!');
 }
 
-/* ===== DOWNLOAD SELF-CONTAINED HTML ===== */
 function downloadHTML() {
   const clone = document.documentElement.cloneNode(true);
   const embEl = clone.querySelector('#embedded-data');
@@ -1687,47 +1486,35 @@ function downloadHTML() {
   toast('✅ File HTML aplikasi tersimpan');
 }
 
-/* ===== RESET DATA ===== */
 function resetData() {
-  showConfirm('🧹 Reset Siswa & Pertemuan',
-    'Semua data siswa dan riwayat absensi pada semua kelas akan dihapus.\nPengaturan identitas sekolah, jadwal, dan mapel tetap tersimpan.',
-    () => {
-      state.classes.forEach(c => {
-        c.students = [];
-        c.attendance = {};
-        c.notes = {};
-        c.meetings = 0;
-        c.meetingsData = {};
-      });
-      currentMeeting = 1;
-      saveState(true);
-      render();
-      toast('Data absensi & siswa telah dikosongkan.');
+  showConfirm('🧹 Reset Siswa & Pertemuan', 'Seluruh data siswa & presensi akan dikosongkan. Pengaturan tetap tersimpan.', () => {
+    state.classes.forEach(c => {
+      c.students = []; c.attendance = {}; c.notes = {}; c.meetings = 0; c.meetingsData = {};
     });
+    currentMeeting = 1;
+    saveState(true);
+    render();
+    toast('Data absensi & siswa telah dikosongkan.');
+  });
 }
 
 function resetTotal() {
-  showConfirm('🗑 Reset Total Aplikasi',
-    'PERINGATAN: Seluruh database, termasuk daftar kelas, akan dikembalikan ke setelan awal pabrik.',
-    () => {
-      localStorage.removeItem(STORAGE_KEY);
-      state = defaultState();
-      currentClass = 0;
-      currentMeeting = 1;
-      saveState(false);
-      render();
-      toast('Aplikasi direset total ke setelan awal.');
-    });
+  showConfirm('🗑 Reset Total Aplikasi', 'PERINGATAN: Seluruh database dan daftar kelas akan direset ke setelan pabrik.', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    idbSet('current_state', null);
+    state = defaultState();
+    currentClass = 0;
+    currentMeeting = 1;
+    saveState(false);
+    render();
+    toast('Aplikasi direset total ke setelan awal.');
+  });
 }
 
-/* ===== MODAL & TOAST ===== */
 function showConfirm(title, msg, onOk) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalMsg').textContent = msg;
-  document.getElementById('modalOk').onclick = () => {
-    closeModal();
-    onOk();
-  };
+  document.getElementById('modalOk').onclick = () => { closeModal(); onOk(); };
   document.getElementById('modal').classList.add('show');
 }
 
@@ -1742,16 +1529,12 @@ function toast(msg, type = 'success') {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal();
-    closeSettingsModal();
-    closeNoteModal();
-  }
+  if (e.key === 'Escape') { closeModal(); closeSettingsModal(); closeNoteModal(); }
 });
 
-/* ===== INISIALISASI ===== */
+/* Jalankan Aplikasi */
 startClock();
-render();
+initAppState();
 </script>
 </body>
-   </html>
+ </html>
