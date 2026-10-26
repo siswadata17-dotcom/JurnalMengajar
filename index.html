@@ -189,7 +189,7 @@
     <span class="status-S">S Sakit</span>
     <span class="status-I">I Izin</span>
     <span class="status-A">A Alfa</span>
-    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa per pertemuan • Auto-Sync aktif</span>
+    <span>• Klik status untuk rotasi • Klik tombol 📝 untuk catatan siswa • Auto-Sync aktif</span>
   </div>
 </div>
 
@@ -224,7 +224,7 @@
 
     <div class="section-title">📅 Pengaturan Jumlah Pertemuan</div>
     <div class="form-group">
-      <label>Batas Maksimal Pertemuan (Pertemuan Limit)</label>
+      <label>Batas Maksimal Pertemuan (Limit)</label>
       <input type="number" id="setMaxMeetings" min="1" max="200" value="50">
       <div class="form-hint">Atur berapa banyak batas maksimal pertemuan per kelas (Default: 50).</div>
     </div>
@@ -393,7 +393,6 @@ let clockInterval = null;
 let syncTimeout = null;
 let isSyncing = false;
 
-// Draft sementara saat membuka modal settings
 let tempClasses = [];
 let tempSubjects = [];
 let tempSchedule = { senin: [], selasa_kamis: [], jumat: [] };
@@ -413,8 +412,8 @@ function defaultState() {
     schoolName: 'SMKN 1 GONDANG',
     schoolAddress: '',
     academicYear: '2026/2027',
-    teacherName: '',
-    nip: '',
+    teacherName: 'Suhardi, S. Pd.',
+    nip: '198908172022211016',
     maxMeetings: 50,
     gscriptUrl: '',
     hasPendingSync: false,
@@ -451,8 +450,8 @@ function migrateState(s) {
   s.schoolName = s.schoolName || 'SMKN 1 GONDANG';
   s.schoolAddress = s.schoolAddress || '';
   s.academicYear = s.academicYear || '2026/2027';
-  s.teacherName = s.teacherName || '';
-  s.nip = s.nip || '';
+  s.teacherName = s.teacherName !== undefined ? s.teacherName : 'Suhardi, S. Pd.';
+  s.nip = s.nip !== undefined ? s.nip : '198908172022211016';
   s.maxMeetings = parseInt(s.maxMeetings) || 50;
   s.gscriptUrl = s.gscriptUrl || '';
   s.hasPendingSync = !!s.hasPendingSync;
@@ -501,9 +500,10 @@ function esc(s) {
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-/* ===== TANGGAL & WAKTU REAL-TIME (CLIENT-SIDE OFFLINE/ONLINE) ===== */
+/* ===== TANGGAL & WAKTU REAL-TIME (CLIENT-SIDE) ===== */
 const DAY_NAMES = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 const MONTH_NAMES = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
 function getDeviceNow() { return new Date(); }
 
@@ -513,6 +513,13 @@ function getDeviceDateISO() {
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const day = String(now.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
+}
+
+function formatMeetingDateDisplay(dateStr) {
+  if (!dateStr) return '-';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '-';
+  return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_SHORT[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 function formatClock() {
@@ -580,7 +587,7 @@ window.addEventListener('online', () => {
 
 window.addEventListener('offline', () => {
   updateNetStatusUI();
-  toast('📴 Mode Offline. Data tetap aman di memori HP/Laptop.');
+  toast('📴 Mode Offline. Data tetap aman di memori lokal.');
 });
 
 function queueAutoSync(delay = 1800) {
@@ -597,7 +604,7 @@ function queueAutoSync(delay = 1800) {
 async function executeSync(isSilent = false) {
   if (isSyncing || !state.gscriptUrl) return;
   if (!navigator.onLine) {
-    if (!isSilent) toast('Tidak ada koneksi internet. Data tersimpan di antrean.', 'error');
+    if (!isSilent) toast('Tidak ada koneksi internet. Data tersimpan di antrean lokal.', 'error');
     return;
   }
 
@@ -674,7 +681,6 @@ function manualSync() {
 
 /* ===== RENDERING UTAMA ===== */
 function render() {
-  // Proteksi index kelas out of bounds
   if (state.classes.length === 0) {
     state.classes.push({
       id: 'c_' + Date.now(),
@@ -775,7 +781,7 @@ function renderInfo() {
   `;
 }
 
-/* ===== FORM PERTEMUAN (REAL-TIME PERANGKAT) ===== */
+/* ===== FORM PERTEMUAN ===== */
 function renderMeetingForm() {
   const c = state.classes[currentClass];
   const form = document.getElementById('meetingForm');
@@ -859,7 +865,7 @@ function updateMeetingData() {
   saveState(true);
 }
 
-/* ===== TABEL ABSENSI DENGAN FITUR 1 (FILTER PERSENTASE) ===== */
+/* ===== TABEL SISWA ===== */
 function onSearchChange(val) {
   currentSearchQuery = (val || '').toLowerCase().trim();
   renderTable();
@@ -884,7 +890,6 @@ function renderTable() {
     return;
   }
 
-  // Filter siswa: Search + Attendance percentage
   const list = c.students.filter(st => {
     const matchSearch = (st.name || '').toLowerCase().includes(currentSearchQuery) ||
                         (st.nis || '').toLowerCase().includes(currentSearchQuery);
@@ -947,7 +952,6 @@ function renderTable() {
   wrap.innerHTML = html + '</tbody></table>';
 }
 
-/* ===== ROTASI STATUS & PERTEMUAN ===== */
 function cycleStatus(studentId) {
   const c = state.classes[currentClass];
   if (!c || c.meetings === 0) return;
@@ -1011,7 +1015,6 @@ function deleteStudent(studentId) {
   });
 }
 
-/* ===== CATATAN SISWA PER PERTEMUAN ===== */
 function openNoteModal(studentId) {
   activeNoteStudentId = studentId;
   const c = state.classes[currentClass];
@@ -1054,7 +1057,7 @@ function deleteStudentNote() {
   toast('Catatan dihapus');
 }
 
-/* ===== SETTINGS & PENGATURAN CRUD (FITUR 1 & 4) ===== */
+/* ===== SETTINGS ===== */
 function openSettingsModal() {
   document.getElementById('setSchoolName').value = state.schoolName;
   document.getElementById('setSchoolAddress').value = state.schoolAddress;
@@ -1068,7 +1071,6 @@ function openSettingsModal() {
     r.checked = (r.value === state.printSettings.orientation);
   });
 
-  // Salin draft sementara agar pembatalan modal tidak mengacaukan state aktif
   tempClasses = JSON.parse(JSON.stringify(state.classes));
   tempSubjects = [...state.subjects];
   tempSchedule = JSON.parse(JSON.stringify(state.schedule));
@@ -1246,7 +1248,6 @@ function saveSettings() {
   state.subjects = tempSubjects;
   state.schedule = tempSchedule;
 
-  // Sesuaikan kelas aktif
   if (currentClass >= state.classes.length) currentClass = 0;
   state.classes.forEach(c => {
     if (!state.subjects.includes(c.subject)) c.subject = state.subjects[0];
@@ -1258,7 +1259,7 @@ function saveSettings() {
   toast('✅ Pengaturan disimpan');
 }
 
-/* ===== BACKUP & RESTORE JSON (FITUR 1) ===== */
+/* ===== BACKUP & RESTORE JSON ===== */
 function backupJSON() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
   const dl = document.createElement('a');
@@ -1299,74 +1300,173 @@ function handleJsonRestore(e) {
   e.target.value = '';
 }
 
-/* ===== CETAK REKAP ===== */
+/* ===== CETAK REKAP LENGKAP (TABEL ABSENSI + REKAP MATERI & JADWAL) ===== */
 function getPrintCSS() {
   const ps = state.printSettings;
   const size = PAPER_SIZES[ps.paperSize] || PAPER_SIZES['A4'];
   const orient = ps.orientation;
   return `
-    @page { size: ${size.w}mm ${size.h}mm ${orient}; margin: 10mm; }
-    body { font-family: Arial, sans-serif; font-size: 10px; color: #000; padding: 5px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    th, td { border: 1px solid #333; padding: 4px; text-align: left; }
-    th { background: #e5e7eb; }
+    @page { size: ${size.w}mm ${size.h}mm ${orient}; margin: 12mm 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 11px; color: #000; padding: 0; margin: 0; }
+    .print-sheet { page-break-after: always; break-after: page; }
+    .page-break { page-break-before: always; break-before: page; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 12px; }
+    th, td { border: 1px solid #111; padding: 4px 6px; }
+    th { background: #f3f4f6; font-size: 11px; }
     .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    h2, h3, h4 { margin: 0; padding: 0; }
   `;
 }
 
 function buildRekapHTML(c) {
   const dNow = getDeviceNow();
-  const tgl = `${dNow.getDate()} ${MONTH_NAMES[dNow.getMonth()]} ${dNow.getFullYear()}`;
-  let html = `<div style="page-break-after:always;">
-    <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:10px;">
-      <h2 style="margin:0; font-size:16px;">REKAP KEHADIRAN SISWA</h2>
-      <h3 style="margin:2px 0; font-size:14px;">${esc(state.schoolName)}</h3>
-      <p style="margin:0; font-size:11px;">Tahun Ajaran: ${esc(state.academicYear)} | Kelas: <b>${esc(c.name)}</b> | Mapel: <b>${esc(c.subject)}</b></p>
+  const tglCetak = `${DAY_NAMES[dNow.getDay()]}, ${dNow.getDate()} ${MONTH_NAMES[dNow.getMonth()]} ${dNow.getFullYear()}`;
+  const teacherName = state.teacherName || 'Suhardi, S. Pd.';
+  const nipLine = state.nip ? `NIP. ${esc(state.nip)}` : '';
+
+  let html = `<div class="print-sheet">
+    <!-- HEADER LAPORAN -->
+    <div style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 14px;">
+      <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 2px;">REKAP KEHADIRAN SISWA</h2>
+      <h3 style="font-size: 14px; font-weight: bold; margin-bottom: 4px;">${esc(state.schoolName)}</h3>
+      ${state.schoolAddress ? `<p style="font-size: 11px; color: #444; margin-bottom: 2px;">${esc(state.schoolAddress)}</p>` : ''}
+      <p style="font-size: 11px; margin: 2px 0;">Tahun Ajaran: <b>${esc(state.academicYear)}</b> | Kelas: <b>${esc(c.name)}</b> | Mapel: <b>${esc(c.subject)}</b></p>
     </div>
-    <table><thead><tr>
-      <th style="width:30px">No</th><th style="width:100px">NIS</th><th>Nama Siswa</th>`;
-  for (let m=1; m<=c.meetings; m++) html += `<th class="text-center" style="width:25px">P${m}</th>`;
-  html += `<th class="text-center" style="width:30px">H</th><th class="text-center" style="width:30px">S</th><th class="text-center" style="width:30px">I</th><th class="text-center" style="width:30px">A</th><th class="text-center" style="width:45px">%</th></tr></thead><tbody>`;
+
+    <!-- BAGIAN A. TABEL ABSENSI -->
+    <h4 style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">A. TABEL ABSENSI SISWA</h4>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 32px;" class="text-center">No</th>
+          <th style="width: 105px;">NIS</th>
+          <th>Nama Siswa</th>`;
+  for (let m = 1; m <= c.meetings; m++) {
+    html += `<th class="text-center" style="width: 26px;">P${m}</th>`;
+  }
+  html += `
+          <th class="text-center" style="width: 30px;">H</th>
+          <th class="text-center" style="width: 30px;">S</th>
+          <th class="text-center" style="width: 30px;">I</th>
+          <th class="text-center" style="width: 30px;">A</th>
+          <th class="text-center" style="width: 48px;">% Hadir</th>
+        </tr>
+      </thead>
+      <tbody>`;
 
   c.students.forEach((st, idx) => {
-    let h=0,s=0,i=0,a=0;
-    html += `<tr><td class="text-center">${idx+1}</td><td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td>`;
-    for (let m=1; m<=c.meetings; m++) {
+    let h=0, s=0, i=0, a=0;
+    html += `<tr>
+      <td class="text-center">${idx + 1}</td>
+      <td>${esc(st.nis || '-')}</td>
+      <td>${esc(st.name)}</td>`;
+    for (let m = 1; m <= c.meetings; m++) {
       const val = (c.attendance[st.id] && c.attendance[st.id][m]) || 'H';
       if (val === 'H') h++; else if (val === 'S') s++; else if (val === 'I') i++; else a++;
       html += `<td class="text-center">${val}</td>`;
     }
-    const pct = c.meetings > 0 ? Math.round((h/c.meetings)*100) : 100;
-    html += `<td class="text-center">${h}</td><td class="text-center">${s}</td><td class="text-center">${i}</td><td class="text-center">${a}</td><td class="text-center"><b>${pct}%</b></td></tr>`;
+    const pct = c.meetings > 0 ? Math.round((h / c.meetings) * 100) : 100;
+    html += `
+      <td class="text-center font-bold">${h}</td>
+      <td class="text-center font-bold">${s}</td>
+      <td class="text-center font-bold">${i}</td>
+      <td class="text-center font-bold">${a}</td>
+      <td class="text-center font-bold">${pct}%</td>
+    </tr>`;
   });
+  html += `</tbody></table>`;
+
+  // Catatan Siswa jika ada
+  let hasNotes = false;
+  let notesHtml = `
+    <h4 style="font-size: 12px; font-weight: bold; margin-top: 14px; margin-bottom: 4px;">CATATAN KHUSUS SISWA</h4>
+    <table><thead><tr><th style="width:35px" class="text-center">No</th><th style="width:110px">NIS</th><th>Nama Siswa</th><th style="width:60px" class="text-center">Ptm</th><th>Keterangan</th></tr></thead><tbody>`;
+  let nIdx = 1;
+  c.students.forEach(st => {
+    if (c.notes && c.notes[st.id]) {
+      for (let m = 1; m <= c.meetings; m++) {
+        const txt = c.notes[st.id][m];
+        if (txt) {
+          hasNotes = true;
+          notesHtml += `<tr><td class="text-center">${nIdx++}</td><td>${esc(st.nis||'-')}</td><td>${esc(st.name)}</td><td class="text-center">P${m}</td><td>${esc(txt)}</td></tr>`;
+        }
+      }
+    }
+  });
+  notesHtml += `</tbody></table>`;
+  if (hasNotes) html += notesHtml;
+
+  // BAGIAN B. REKAP MATERI & JADWAL (Halaman ke-2 persis seperti gambar)
+  html += `
+    <div class="page-break" style="padding-top: 10px;">
+      <h4 style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">${hasNotes ? 'C' : 'B'}. REKAP MATERI & JADWAL</h4>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 90px;" class="text-center">Pertemuan</th>
+            <th style="width: 220px;" class="text-center">Hari / Tanggal</th>
+            <th style="width: 70px;" class="text-center">Jam Ke-</th>
+            <th style="width: 130px;" class="text-center">Waktu</th>
+            <th class="text-center">Materi</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+  const totalM = Math.max(1, c.meetings);
+  for (let m = 1; m <= totalM; m++) {
+    const d = c.meetingsData[m] || {};
+    const tglDisplay = formatMeetingDateDisplay(d.date);
+    const sched = getScheduleForDate(d.date);
+    const sc = sched.find(x => x.hour === d.hour);
+    const waktuDisplay = sc ? `${sc.start} - ${sc.end}` : '07:00 - 07:45';
+    const materiDisplay = (d.material && d.material.trim()) ? esc(d.material) : '-';
+
+    html += `<tr>
+      <td class="text-center">${m}</td>
+      <td class="text-center">${tglDisplay}</td>
+      <td class="text-center">${d.hour || 1}</td>
+      <td class="text-center">${waktuDisplay}</td>
+      <td>${materiDisplay}</td>
+    </tr>`;
+  }
 
   html += `</tbody></table>
-    <div style="margin-top:20px; float:right; text-align:center; width:220px;">
-      <p>Gondang, ${tgl}</p>
-      <p style="margin-top:4px;">Guru Pengampu,</p>
-      <div style="height:55px;"></div>
-      <p style="font-weight:bold; text-decoration:underline;">${esc(state.teacherName || '...................................')}</p>
-      <p>NIP. ${esc(state.nip || '...................................')}</p>
+
+      <!-- AREA TANDA TANGAN (SEBELAH KANAN SESUAI GAMBAR) -->
+      <div style="margin-top: 24px; text-align: right; width: 100%;">
+        <div style="display: inline-block; text-align: right; min-width: 220px;">
+          <p style="margin: 0; font-size: 11px;">${tglCetak}</p>
+          <p style="margin: 4px 0 0; font-size: 11px; font-weight: bold;">Guru Mata Pelajaran ${esc(c.subject)}</p>
+          <div style="height: 60px;"></div>
+          <p style="margin: 0; font-size: 11px; font-weight: bold; display: inline-block; border-top: 1px solid #000; padding-top: 3px;">${esc(teacherName)}</p>
+          ${nipLine ? `<p style="margin: 2px 0 0; font-size: 10px;">${nipLine}</p>` : ''}
+        </div>
+      </div>
     </div>
   </div>`;
+
   return html;
 }
 
 function printRekap(idx) {
   const c = state.classes[idx];
-  if (!c || c.students.length === 0) { toast('Tidak ada siswa untuk dicetak', 'error'); return; }
+  if (!c || (c.students.length === 0 && c.meetings === 0)) {
+    toast('Tidak ada data kelas untuk dicetak', 'error'); return;
+  }
   const w = window.open('', '_blank');
-  w.document.write(`<html><head><title>Cetak Rekap</title><style>${getPrintCSS()}</style></head><body>${buildRekapHTML(c)}</body></html>`);
+  w.document.write(`<!DOCTYPE html><html><head><title>Rekap ${esc(c.name)} - ${esc(state.schoolName)}</title><style>${getPrintCSS()}</style></head><body>${buildRekapHTML(c)}</body></html>`);
   w.document.close();
   setTimeout(() => { w.focus(); w.print(); }, 400);
 }
 
 function printAllRekap() {
-  const list = state.classes.filter(c => c.students.length > 0);
+  const list = state.classes.filter(c => c.students.length > 0 || c.meetings > 0);
   if (list.length === 0) { toast('Belum ada kelas yang berisi data siswa', 'error'); return; }
   const w = window.open('', '_blank');
-  let content = list.map(c => buildRekapHTML(c)).join('');
-  w.document.write(`<html><head><title>Cetak Semua</title><style>${getPrintCSS()}</style></head><body>${content}</body></html>`);
+  const content = list.map(c => buildRekapHTML(c)).join('');
+  w.document.write(`<!DOCTYPE html><html><head><title>Rekap Semua Kelas - ${esc(state.schoolName)}</title><style>${getPrintCSS()}</style></head><body>${content}</body></html>`);
   w.document.close();
   setTimeout(() => { w.focus(); w.print(); }, 400);
 }
@@ -1487,7 +1587,7 @@ function resetTotal() {
     });
 }
 
-/* ===== MODAL KONFIRMASI & TOAST ===== */
+/* ===== MODAL & TOAST ===== */
 function showConfirm(title, msg, onOk) {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalMsg').textContent = msg;
@@ -1516,9 +1616,9 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ===== BOOTSTRAP INISIALISASI ===== */
+/* ===== INISIALISASI ===== */
 startClock();
 render();
 </script>
 </body>
- </html>
+     </html>
